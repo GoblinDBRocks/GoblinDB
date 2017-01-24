@@ -1,0 +1,37 @@
+{
+  "name": "goblindb",
+  "version": "0.0.1",
+  "description": "GoblinDB - An amazing, simple and fun database for humans",
+  "main": "goblindb.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UlisesGascon/GoblinDB.git"
+  },
+  "keywords": [
+    "database",
+    "json"
+  ],
+  "author":     
+    {
+      "name": "Ulises Gascón",
+      "url": "https://github.com/ulisesGascon"
+    },
+  "contributors": [
+    {
+      "name": "Carlos Hernandez",
+      "url": "https://github.com/codingcarlos"
+    },
+    {
+      "name": "Jose Manuel Gallego Chamorro",
+      "url": "https://github.com/Josheriff"
+    },
+  ],
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/UlisesGascon/GoblinDB/issues"
+  },
+  "homepage": "https://github.com/UlisesGascon/GoblinDB#readme"
+}
