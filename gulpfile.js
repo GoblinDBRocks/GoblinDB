@@ -41,6 +41,8 @@ gulp.task('lint', function() {
     return gulp.src(filesToLint)
             .pipe(debug({title: 'eslint (Scope):'}))
             .pipe(eslint())
+            .pipe(eslint({fix:true}))
             .pipe(eslint.format())
-            .pipe(eslint.failAfterError());
+            .pipe(gulp.dest('.'));
+            //.pipe(eslint.failAfterError());
 });
