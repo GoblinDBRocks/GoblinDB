@@ -44,5 +44,4 @@ gulp.task('lint', function() {
             .pipe(eslint({fix:true}))
             .pipe(eslint.format())
             .pipe(gulp.dest('.'));
-            //.pipe(eslint.failAfterError());
 });
