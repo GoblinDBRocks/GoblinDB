@@ -35,7 +35,7 @@
   "homepage": "https://github.com/UlisesGascon/GoblinDB#readme",
   "dependencies": {
     "lodash": "4.17.4",
-    "scheduled": "0.5.0"
+    "observed": "1.1.2"
   },
   "devDependencies": {
     "chai": "3.5.0",
