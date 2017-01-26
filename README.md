@@ -5,7 +5,7 @@
 
 # GoblinDB
 
-![goblin](http://www.thegoldqueen.com/wp-content/uploads/2015/09/goblin.jpg)
+![goblin](art/goblin_proto.jpg)
 
 ### Fear the Goblin!
 
