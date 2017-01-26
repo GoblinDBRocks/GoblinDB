@@ -217,19 +217,21 @@ npm test
 
 - [ ] Logo, branding...
 - [ ] Landing Page.
-- [ ] Support multidimensional navigation in the database (.ref() method)
-- [ ] Support to chain methods
-- [ ] Add basic query methods
-- [ ] Add Avance query methods
-- [ ] Add support to .once() method for events
-- [ ] Add support to UID in events
+- [ ] Support multidimensional navigation in the database (.ref() method).
+- [ ] Support to chain methods.
+- [ ] Add basic query methods.
+- [ ] Add Avance query methods.
+- [ ] Add support to .once() method for events.
+- [ ] Add support to UID in events.
 - [ ] Support .goblin extension for database in order to record raw database with objects, functions...
-- [ ] Support .json compatibility for database
-- [ ] Additional events to support (config changes, etc...)
+- [ ] Support .json compatibility for database.
+- [ ] Additional events to support (config changes, etc...).
 - [ ] Add additional support to Backup goblin with other databases like Firebase, Mongo... in real time.
-- [ ] Full documentation in JSDoc
-- [ ] Gulp Tasks Improves
-- [ ] Example Folder
+- [ ] Full documentation in JSDoc.
+- [ ] Gulp Tasks Improves.
+- [ ] Example Folder.
+- [ ] Test support for Events using Sinon.
+- [ ] Test refactor in order to separate more the test cases.
 
 ### Achievements
 
