@@ -1,8 +1,8 @@
 {
   "name": "goblindb",
   "version": "0.0.2",
-  "description": "GoblinDB - An amazing, simple and fun database for humans",
-  "main": "goblindb.js",
+  "description": "GoblinDB | Fear the Goblin! | An amazing, simple and fun database for humans",
+  "main": "goblin.js",
   "scripts": {
     "test": "gulp test"
   },
