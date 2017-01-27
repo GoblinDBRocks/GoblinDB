@@ -55,7 +55,7 @@ You can run a demo in 4 steps!
 ```
 - In your file..
 ```javascript
-    var GDB = require("./goblin");
+    var GDB = require("goblindb");
     var http = require("http");
     
     var goblinDB = GDB();
@@ -73,7 +73,7 @@ Just for the example, current database status... as you can see is a JSON file:
 
 - *get*. Return the information from a key or the whole database
 ```javascript
-    var GDB = require("./goblin");
+    var GDB = require("goblindb");
     var http = require("http");
     
     var goblinDB = GDB();
@@ -93,7 +93,7 @@ You can storage all the data that you want except functions. Until the next rele
 
 - *set(key, data)*. Write or replace data to a defined key (optional)
 ```javascript
-    var GDB = require("./goblin");
+    var GDB = require("goblindb");
     var http = require("http");
     
     var goblinDB = GDB();
@@ -107,7 +107,7 @@ You can storage all the data that you want except functions. Until the next rele
 
 - *push(data)*. Write data in a new key (random name added)
 ```javascript
-    var GDB = require("./goblin");
+    var GDB = require("goblindb");
     var http = require("http");
     
     var goblinDB = GDB();
@@ -117,7 +117,7 @@ You can storage all the data that you want except functions. Until the next rele
 
 - *update(data, key)*. Add and modify data to a defined key 
 ```javascript
-    var GDB = require("./goblin");
+    var GDB = require("goblindb");
     var http = require("http");
     
     var goblinDB = GDB();
@@ -140,7 +140,7 @@ At the moment the the listeners can be added to the database root, but in the ne
 
 - *on()*, Add a new function to be triggered on a specific change.
 ```javascript
-var GDB = require("./goblin");
+var GDB = require("goblindb");
 var http = require("http");
 
 var goblinDB = GDB();
@@ -153,7 +153,7 @@ goblinDB.on('change', function(changes){
 
 - *off()*, Remove a previous record event
 ```javascript
-var GDB = require("./goblin");
+var GDB = require("goblindb");
 var http = require("http");
 
 var goblinDB = GDB();
@@ -176,7 +176,7 @@ Some extra features that maybe can help you.
 
 - *getConfig() & updateConfig*, modify/replace/extend configuration.
 ```javascript
-var GDB = require("./goblin");
+var GDB = require("goblindb");
 var http = require("http");
 
 var goblinDB = GDB();
@@ -192,7 +192,7 @@ console.log(goblinDB.getConfig())
 
 - *stopStorage() & startStorage()*. enable/disable the storage in disk.
 ```javascript
-var GDB = require("./goblin");
+var GDB = require("goblindb");
 var http = require("http");
 
 var goblinDB = GDB();
@@ -234,6 +234,21 @@ npm test
 - [ ] Test refactor in order to separate more the test cases.
 
 ### Achievements
+
+### v.0.0.4
+
+**Features:**
+- Documentation improved
+
+**Bugs Fixed**
+- [Wrong route on npm install](https://github.com/UlisesGascon/GoblinDB/issues/3)
+- [Database storage location](https://github.com/UlisesGascon/GoblinDB/issues/4)
+
+
+### v.0.0.3
+
+**Notes:**
+Just to solve issues with NPM.
 
 ### v.0.0.2
 
