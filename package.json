@@ -1,6 +1,6 @@
 {
   "name": "goblindb",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "GoblinDB | Fear the Goblin! | An amazing, simple and fun database for humans",
   "main": "./goblin.js",
   "scripts": {
