@@ -5,7 +5,7 @@
 
 # GoblinDB
 
-![goblin](https://github.com/GoblinDBRocks/Art/blob/master/high_resolution/goblin_db_logo-01.png)
+![goblin](https://raw.githubusercontent.com/GoblinDBRocks/Art/master/high_resolution/goblin_db_logo-01.png)
 
 ### Fear the Goblin!
 
@@ -21,9 +21,6 @@
 - The database can lead or connect your server components
 - Events are great... because we are asynchronous
 - We prefer facts over promises: facts are there, promises maybe yes or not. In fact, we're talking about callbacks.
-
-
-![goblin2](https://github.com/GoblinDBRocks/Art/blob/master/high_resolution/goblin_db_logo-02.png)
 
 
 #### Demo
@@ -218,6 +215,9 @@ npm test
 
 ### Future Implementations
 
+![goblin2](https://raw.githubusercontent.com/GoblinDBRocks/Art/master/high_resolution/goblin_db_logo-02.png)
+
+
 - [ ] Logo, branding...
 - [ ] Landing Page.
 - [ ] Support multidimensional navigation in the database (.ref() method).
@@ -237,6 +237,10 @@ npm test
 - [ ] Test refactor in order to separate more the test cases.
 
 ### Achievements
+
+### v.0.0.6
+
+- Readme improved
 
 ### v.0.0.5
 
