@@ -10,7 +10,7 @@ var JSONfn = require('json-fn');
 var goblin = {
     config: configGoblin,
     db:{},
-    lambda:[],
+    ambush:[],
     hooks: {
         add: null,
         remove: null,
@@ -39,8 +39,8 @@ var eventEmitter = O(goblin)
 
 eventEmitter.on('change', function(changes){
     var err = false
-    if (changes.path === "lambda") {
-        fs.writeFile(goblin.config.lambdaFile, JSONfn.stringify(goblin.lambda), function(error) {
+    if (changes.path === "ambush") {
+        fs.writeFile(goblin.config.ambushFile, JSONfn.stringify(goblin.ambush), function(error) {
             if(error) {
                 err = error;
                 throw configGoblin.logPrefix, 'Database saving error in file System:', err;
@@ -82,82 +82,82 @@ module.exports = function(config){
         fs.writeFileSync(goblin.config.file, JSON.stringify({}));
     }
 
-    // Read current Lambda Database
-    if (fs.existsSync(goblin.config.lambdaFile)) {
-        goblin.lambda = eval(JSONfn.parse(fs.readFileSync(goblin.config.lambdaFile)))
+    // Read current Ambush Database
+    if (fs.existsSync(goblin.config.ambushFile)) {
+        goblin.ambush = eval(JSONfn.parse(fs.readFileSync(goblin.config.ambushFile)))
     } else {
-        fs.writeFileSync(goblin.config.lambdaFile, JSON.stringify([]));
+        fs.writeFileSync(goblin.config.ambushFile, JSON.stringify([]));
     }
     
     return {
-        lambda: {
+        ambush: {
             add: function(object){
                 // Validation
-                if(!object || Array.isArray(object) || typeof(object) !== "object") throw configGoblin.logPrefix, 'Lambda saving error: no data provided or data is not an object/Array.';
-                if(!object.id || typeof(object.id) !== "string") throw configGoblin.logPrefix, 'Lambda saving error: no ID provided or ID is not a string.';
-                if(!object.category || !Array.isArray(object.category)) throw configGoblin.logPrefix, 'Lambda saving error: no CATEGORY provided or CATEGORY is not an Array.';
-                if(!object.action || typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Lambda saving error: no ACTION provided or ACTION is not a function.';
+                if(!object || Array.isArray(object) || typeof(object) !== "object") throw configGoblin.logPrefix, 'Ambush saving error: no data provided or data is not an object/Array.';
+                if(!object.id || typeof(object.id) !== "string") throw configGoblin.logPrefix, 'Ambush saving error: no ID provided or ID is not a string.';
+                if(!object.category || !Array.isArray(object.category)) throw configGoblin.logPrefix, 'Ambush saving error: no CATEGORY provided or CATEGORY is not an Array.';
+                if(!object.action || typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Ambush saving error: no ACTION provided or ACTION is not a function.';
                 object.description = object.description && typeof(object.description) === "string" ? object.description : false;
                 // Action
-                goblin.lambda.push(object)
+                goblin.ambush.push(object)
             },
             remove: function(id){
                 // Validation
-                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Ambush error: no ID provided or ID is not a string.';
                 
                 // Action
-                _.remove(goblin.lambda, function(current) {
+                _.remove(goblin.ambush, function(current) {
                     return current.id === id;
                 });
             },
             update: function(id, object){
               // Validations
-                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
-                if(!object || Array.isArray(object) || typeof(object) !== "object") throw configGoblin.logPrefix, 'Lambda saving error: no data provided or data is not an object/Array.';
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Ambush error: no ID provided or ID is not a string.';
+                if(!object || Array.isArray(object) || typeof(object) !== "object") throw configGoblin.logPrefix, 'Ambush saving error: no data provided or data is not an object/Array.';
                 if(object.id){
-                    if(typeof(object.id) !== "string") throw configGoblin.logPrefix, 'Lambda saving error: no ID provided or ID is not a string.';
+                    if(typeof(object.id) !== "string") throw configGoblin.logPrefix, 'Ambush saving error: no ID provided or ID is not a string.';
                 }
                 if(object.category){
-                    if(!Array.isArray(object.category)) throw configGoblin.logPrefix, 'Lambda saving error: no CATEGORY provided or CATEGORY is not an Array.';
+                    if(!Array.isArray(object.category)) throw configGoblin.logPrefix, 'Ambush saving error: no CATEGORY provided or CATEGORY is not an Array.';
                 }
                 if(object.action){
-                    if(typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Lambda saving error: no ACTION provided or ACTION is not a function.';
+                    if(typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Ambush saving error: no ACTION provided or ACTION is not a function.';
                 }
                 if(object.description){
                     object.description = (typeof(object.description) === "string") ? object.description : false;
                 }
               // Action
-                var index = _.indexOf(goblin.lambda, _.find(goblin.lambda, {id}));
-                goblin.lambda[index] = _.merge(goblin.lambda[index], object);
+                var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
+                goblin.ambush[index] = _.merge(goblin.ambush[index], object);
             },
             details: function(id){
               // Validation
-                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Ambush error: no ID provided or ID is not a string.';
               // Action
-                var index = _.indexOf(goblin.lambda, _.find(goblin.lambda, {id}));
-                return goblin.lambda[index]
+                var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
+                return goblin.ambush[index]
             },
             list: function(category){
                 var list;
                 if(category && typeof(category) === "string"){
-                    list = _(goblin.lambda).filter(function(current){
+                    list = _(goblin.ambush).filter(function(current){
                         return _.includes(current.category, category);
                     }).map('id').value();
                 } else {
-                    list = _(goblin.lambda).map('id').value();
+                    list = _(goblin.ambush).map('id').value();
                 }
                 return list;
                 
             },
             run: function(id, parameter, callback){
               // Validation
-                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Ambush error: no ID provided or ID is not a string.';
                 if(callback){
-                    if(typeof(callback) !== "function") throw configGoblin.logPrefix, 'Lambda saving error: no CALLBACK provided or CALLBACK is not a function.';
+                    if(typeof(callback) !== "function") throw configGoblin.logPrefix, 'Ambush saving error: no CALLBACK provided or CALLBACK is not a function.';
                 }
               // Action
-                var index = _.indexOf(goblin.lambda, _.find(goblin.lambda, {id}));
-                goblin.lambda[index].action(parameter, callback);
+                var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
+                goblin.ambush[index].action(parameter, callback);
             }
         },
         on: goblin.hooks.add,

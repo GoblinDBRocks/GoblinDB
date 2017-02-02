@@ -31,7 +31,7 @@ function cleanUp (file){
     });
 }
 
-describe("Lambda test", function(){
+describe("Ambush (Lambda) test", function(){
     describe("Methods:", function(){
         // Code...
         beforeEach(function(){

@@ -18,9 +18,10 @@
 - Data is the king.
 - Data should be stored in the system as a file when a change happend.
 - Data storage in the system must be hackable.
-- The database can lead or connect your server components
-- Events are great... because we are asynchronous
+- The database can lead or connect your server components.
+- Events are great... because we are asynchronous.
 - We prefer facts over promises: facts are there, promises maybe yes or not. In fact, we're talking about callbacks.
+- We believe that data can be also functions, regex... so we don't believe in lambda, we believe in ambush.
 
 
 #### Demo
@@ -236,23 +237,23 @@ npm test
 ### v.0.0.7
 
 **Main target:**
-- Lambda support
+- Ambush (lambda) support
 
 **Bugs Fixed:**
 - No need to require http module, in documentation examples
 
 **Features:**
-- Added optional features like parameters and callbacks for lambda
-- Added automatic save for Lambda
-- Added .goblin extension in order to store lambda operations
-- Added Testing to support Lambda features
-- Added goblin.lambda as container
-- Added goblin.lambda.add(),
-- Added goblin.lambda.remove(),
-- Added goblin.lambda.update(),
-- Added goblin.lambda.list(),
-- Added goblin.lambda.details(),
-- Added goblin.lambda.run()
+- Added optional features like parameters and callbacks for ambush (lambda)
+- Added automatic save for ambush (lambda)
+- Added .goblin extension in order to store ambush (lambda) operations
+- Added Testing to support ambush (lambda) features
+- Added goblin.ambush as container
+- Added goblin.ambush.add(),
+- Added goblin.ambush.remove(),
+- Added goblin.ambush.update(),
+- Added goblin.ambush.list(),
+- Added goblin.ambush.details(),
+- Added goblin.ambush.run()
 
 ### v.0.0.6
 

@@ -38,9 +38,9 @@ http.get("http://eventpoints.osweekends.com/api/events", function(res){
 
 
 console.log("Let's have some fun with advance features!")
-console.log("Fun with Lambda functions!")
+console.log("Fun with ambush functions!")
 
-goblinDB.lambda.add({
+goblinDB.ambush.add({
     id: "testing-goblin",
     category: ["data", "other-tag"],
     description: "Optional details...",
@@ -51,7 +51,7 @@ goblinDB.lambda.add({
     }
 })
 
-goblinDB.lambda.run("testing-goblin", "I love Goblin", function(arg){
+goblinDB.ambush.run("testing-goblin", "I love Goblin", function(arg){
     console.log("This is from the callback: Now Running the Callback...");
     console.log("This is from the Function storage in Goblin:", arg);
 })
