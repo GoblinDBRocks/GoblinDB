@@ -31,7 +31,65 @@ function cleanUp (file){
     });
 }
 
-describe("Basic tests", function() {
+describe("Lambda test", function(){
+    describe("Methods:", function(){
+        // Code...
+        beforeEach(function(){
+            // Code...
+        });
+        
+        it("Method add(): As Expected", function() {
+            // Code...
+        });
+        
+        it("Method add(): As No Expected", function() {
+            // Code...
+        });
+        
+        it("Method remove(): As Expected", function() {
+            // Code...
+        });
+        
+        it("Method remove(): As No Expected", function() {
+            // Code...
+        });
+        
+        it("Method update(): As Expected", function() {
+            // Code...
+        });
+
+        it("Method update(): As No Expected", function() {
+            // Code...
+        });
+
+        it("Method list(): As Expected", function() {
+            // Code...
+        });
+        
+        it("Method list(): As No Expected", function() {
+            // Code...
+        });
+        
+        it("Method deatils(): As Expected", function() {
+            // Code...
+        });
+
+        it("Method deatils(): As No Expected", function() {
+            // Code...
+        });
+
+        it("Method run(): As Expected", function() {
+            // Code...
+        });
+        
+        it("Method run(): As No Expected", function() {
+            // Code...
+        });
+    });
+});
+
+
+describe("Database tests", function() {
     beforeEach(function(done) {
         cleanGoblin(done);
     });
