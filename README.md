@@ -56,8 +56,7 @@ You can run a demo in 4 steps!
 - In your file..
 ```javascript
     var GDB = require("goblindb");
-    var http = require("http");
-    
+
     var goblinDB = GDB();
 ```
 
@@ -74,7 +73,6 @@ Just for the example, current database status... as you can see is a JSON file:
 - *get*. Return the information from a key or the whole database
 ```javascript
     var GDB = require("goblindb");
-    var http = require("http");
     
     var goblinDB = GDB();
     
@@ -94,7 +92,6 @@ You can storage all the data that you want except functions. Until the next rele
 - *set(key, data)*. Write or replace data to a defined key (optional)
 ```javascript
     var GDB = require("goblindb");
-    var http = require("http");
     
     var goblinDB = GDB();
     
@@ -108,7 +105,6 @@ You can storage all the data that you want except functions. Until the next rele
 - *push(data)*. Write data in a new key (random name added)
 ```javascript
     var GDB = require("goblindb");
-    var http = require("http");
     
     var goblinDB = GDB();
     
@@ -118,7 +114,6 @@ You can storage all the data that you want except functions. Until the next rele
 - *update(data, key)*. Add and modify data to a defined key 
 ```javascript
     var GDB = require("goblindb");
-    var http = require("http");
     
     var goblinDB = GDB();
     
@@ -237,6 +232,27 @@ npm test
 - [ ] Test refactor in order to separate more the test cases.
 
 ### Achievements
+
+### v.0.0.7
+
+**Main target:**
+- Lambda support
+
+**Bugs Fixed:**
+- No need to require http module, in documentation examples
+
+**Features:**
+- Added optional features like parameters and callbacks for lambda
+- Added automatic save for Lambda
+- Added .goblin extension in order to store lambda operations
+- Added Testing to support Lambda features
+- Added goblin.lambda as container
+- Added goblin.lambda.add(),
+- Added goblin.lambda.remove(),
+- Added goblin.lambda.update(),
+- Added goblin.lambda.list(),
+- Added goblin.lambda.details(),
+- Added goblin.lambda.run()
 
 ### v.0.0.6
 
