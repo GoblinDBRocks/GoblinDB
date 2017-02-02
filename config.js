@@ -1,3 +1,4 @@
 module.exports = {
-    logPrefix: "[GoblinDB]" 
+    logPrefix: "[GoblinDB]",
+    lambdaFile: "./goblin_db.goblin"
 }
