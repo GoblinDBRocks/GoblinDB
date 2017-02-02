@@ -4,11 +4,13 @@ var fs = require('fs');
 var _ = require('lodash');
 var O = require('observed');
 var randomstring = require("randomstring");
+var JSONfn = require('json-fn');
 
 /* ---- Basic Goblin Skeleton ---- */
 var goblin = {
     config: configGoblin,
     db:{},
+    lambda:[],
     hooks: {
         add: null,
         remove: null,
@@ -35,13 +37,16 @@ goblin.hooks.remove = function(event, callback){
 var O = require('observed')
 var eventEmitter = O(goblin)
 
-//ee.on('change', function(){console.log("aaaaa")})
-
-
-//console.log("holaaa...")
 eventEmitter.on('change', function(changes){
     var err = false
-
+    if (changes.path === "lambda") {
+        fs.writeFile(goblin.config.lambdaFile, JSONfn.stringify(goblin.lambda), function(error) {
+            if(error) {
+                err = error;
+                throw configGoblin.logPrefix, 'Database saving error in file System:', err;
+            }
+        });
+    }
     if (changes.path === "db") {
         // Recording data in the file
         if(goblin.config.recordChanges){
@@ -60,8 +65,6 @@ eventEmitter.on('change', function(changes){
             }
         })
 
-    } else {
-        // changes in goblin (as objects) not tracket in this version
     }
 });
 
@@ -72,14 +75,91 @@ module.exports = function(config){
     config = helpers.configValidation(config);
     goblin.config = _.merge({}, goblin.config, config);
     
-    // Read current data
+    // Read current database
     if (fs.existsSync(goblin.config.file)) {
         goblin.db = JSON.parse(fs.readFileSync(goblin.config.file))
     } else {
         fs.writeFileSync(goblin.config.file, JSON.stringify({}));
     }
+
+    // Read current Lambda Database
+    if (fs.existsSync(goblin.config.lambdaFile)) {
+        goblin.lambda = eval(JSONfn.parse(fs.readFileSync(goblin.config.lambdaFile)))
+    } else {
+        fs.writeFileSync(goblin.config.lambdaFile, JSON.stringify([]));
+    }
     
     return {
+        lambda: {
+            add: function(object){
+                // Validation
+                if(!object || Array.isArray(object) || typeof(object) !== "object") throw configGoblin.logPrefix, 'Lambda saving error: no data provided or data is not an object/Array.';
+                if(!object.id || typeof(object.id) !== "string") throw configGoblin.logPrefix, 'Lambda saving error: no ID provided or ID is not a string.';
+                if(!object.category || !Array.isArray(object.category)) throw configGoblin.logPrefix, 'Lambda saving error: no CATEGORY provided or CATEGORY is not an Array.';
+                if(!object.action || typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Lambda saving error: no ACTION provided or ACTION is not a function.';
+                object.description = object.description && typeof(object.description) === "string" ? object.description : false;
+                // Action
+                goblin.lambda.push(object)
+            },
+            remove: function(id){
+                // Validation
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+                
+                // Action
+                _.remove(goblin.lambda, function(current) {
+                    return current.id === id;
+                });
+            },
+            update: function(id, object){
+              // Validations
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+                if(!object || Array.isArray(object) || typeof(object) !== "object") throw configGoblin.logPrefix, 'Lambda saving error: no data provided or data is not an object/Array.';
+                if(object.id){
+                    if(typeof(object.id) !== "string") throw configGoblin.logPrefix, 'Lambda saving error: no ID provided or ID is not a string.';
+                }
+                if(object.category){
+                    if(!Array.isArray(object.category)) throw configGoblin.logPrefix, 'Lambda saving error: no CATEGORY provided or CATEGORY is not an Array.';
+                }
+                if(object.action){
+                    if(typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Lambda saving error: no ACTION provided or ACTION is not a function.';
+                }
+                if(object.description){
+                    object.description = (typeof(object.description) === "string") ? object.description : false;
+                }
+              // Action
+                var index = _.indexOf(goblin.lambda, _.find(goblin.lambda, {id}));
+                goblin.lambda[index] = _.merge(goblin.lambda[index], object);
+            },
+            details: function(id){
+              // Validation
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+              // Action
+                var index = _.indexOf(goblin.lambda, _.find(goblin.lambda, {id}));
+                return goblin.lambda[index]
+            },
+            list: function(category){
+                var list;
+                if(category && typeof(category) === "string"){
+                    list = _(goblin.lambda).filter(function(current){
+                        return _.includes(current.category, category);
+                    }).map('id').value();
+                } else {
+                    list = _(goblin.lambda).map('id').value();
+                }
+                return list;
+                
+            },
+            run: function(id, parameter, callback){
+              // Validation
+                if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Lambda error: no ID provided or ID is not a string.';
+                if(callback){
+                    if(typeof(callback) !== "function") throw configGoblin.logPrefix, 'Lambda saving error: no CALLBACK provided or CALLBACK is not a function.';
+                }
+              // Action
+                var index = _.indexOf(goblin.lambda, _.find(goblin.lambda, {id}));
+                goblin.lambda[index].action(parameter, callback);
+            }
+        },
         on: goblin.hooks.add,
         off: goblin.hooks.remove,
         getConfig: function(){
