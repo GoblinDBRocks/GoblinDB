@@ -130,7 +130,7 @@ describe("Ambush (Lambda) test", function(){
             });
         });
         
-        describe("Method remove(): As Expected", function() {
+        describe("remove(): As Expected", function() {
             it("Simple function. No Arguments and No Callback", function() {
                 goblinDB.ambush.remove("testing-simple-function");
                 expect(goblinDB.ambush.list().length).to.be.equal(2);
@@ -147,7 +147,7 @@ describe("Ambush (Lambda) test", function(){
             });
         });
         
-        describe("Method remove(): Error Management", function() {
+        describe("remove(): Error Management", function() {
             it("Wrong Arguments provided: No ID", function() {
                 expect(function () { goblinDB.ambush.remove()}).to.throw('Ambush error: no ID provided or ID is not a string.');
             });
@@ -156,8 +156,8 @@ describe("Ambush (Lambda) test", function(){
             });
         });
         
-        describe("Method update(): As Expected", function() {
-            
+        describe("update(): As Expected", function() {
+/*            
             it("CONCEPT:", function(){
                 goblinDB.ambush.add(simpleFunction);
                 expect(goblinDB.ambush.list().length).to.be.equal(1);
@@ -166,9 +166,10 @@ describe("Ambush (Lambda) test", function(){
                 //goblinDB.ambush.add(simpleFunction);
                 expect(goblinDB.ambush.list().length).to.be.equal(1);
             })
+*/
         });
 
-        describe("Method update(): Error Management", function() {
+        describe("update(): Error Management", function() {
             it("Wrong Arguments provided: No ID", function() {
                 expect(function () { goblinDB.ambush.update()}).to.throw('Ambush error: no ID provided or ID is not a string.');
             });
@@ -208,30 +209,42 @@ describe("Ambush (Lambda) test", function(){
                     action: [],
                 })}).to.throw('Ambush saving error: no ACTION provided or ACTION is not a function.');
             });
-                        /**/
         });
 
-        it("Method list(): As Expected", function() {
+        describe("list(): As Expected", function() {
+            it("Brings all the functions", function(){
+                goblinDB.ambush.add(simpleFunction);
+                goblinDB.ambush.add(fullFunction);
+                expect(goblinDB.ambush.list().length).to.be.equal(2);
+            });
+            it("Brings all the functions filtered by category", function(){
+                expect(goblinDB.ambush.list("test").length).to.be.equal(2);
+                expect(goblinDB.ambush.list("test-callback").length).to.be.equal(1);
+            });
+        });
+        
+        describe("list(): Error Management", function() {
+            it("Deal with no real category", function(){
+                expect(goblinDB.ambush.list("test-invented").length).to.be.equal(0);
+            });
+            it("Wrong Arguments provided: No right CATEGORY type of data", function(){
+                expect(goblinDB.ambush.list(123).length).to.be.equal(2);
+            });
+        });
+        
+        describe("deatils(): As Expected", function() {
+            // Code...
+        });
+
+        describe("deatils(): Error Management", function() {
+            // Code...
+        });
+
+        describe("run(): As Expected", function() {
             // Code...
         });
         
-        it("Method list(): As No Expected", function() {
-            // Code...
-        });
-        
-        it("Method deatils(): As Expected", function() {
-            // Code...
-        });
-
-        it("Method deatils(): As No Expected", function() {
-            // Code...
-        });
-
-        it("Method run(): As Expected", function() {
-            // Code...
-        });
-        
-        it("Method run(): As No Expected", function() {
+        describe("run(): Error Management", function() {
             // Code...
         });
     });
