@@ -40,7 +40,7 @@ var eventEmitter = O(goblin)
 eventEmitter.on('change', function(changes){
     var err = false
     if (changes.path === "ambush") {
-        fs.writeFile(goblin.config.ambushFile, JSONfn.stringify(goblin.ambush), function(error) {
+        fs.writeFile(goblin.config.files.ambush, JSONfn.stringify(goblin.ambush), function(error) {
             if(error) {
                 err = error;
                 throw configGoblin.logPrefix, 'Database saving error in file System:', err;
@@ -50,7 +50,7 @@ eventEmitter.on('change', function(changes){
     if (changes.path === "db") {
         // Recording data in the file
         if(goblin.config.recordChanges){
-            fs.writeFile(goblin.config.file, JSON.stringify(goblin.db), function(error) {
+            fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
                 if(error) {
                     err = error;
                     throw configGoblin.logPrefix, 'Database saving error in file System:', err;
@@ -76,17 +76,17 @@ module.exports = function(config){
     goblin.config = _.merge({}, goblin.config, config);
     
     // Read current database
-    if (fs.existsSync(goblin.config.file)) {
-        goblin.db = JSON.parse(fs.readFileSync(goblin.config.file))
+    if (fs.existsSync(goblin.config.files.db)) {
+        goblin.db = JSON.parse(fs.readFileSync(goblin.config.files.db))
     } else {
-        fs.writeFileSync(goblin.config.file, JSON.stringify({}));
+        fs.writeFileSync(goblin.config.files.db, JSON.stringify({}));
     }
 
     // Read current Ambush Database
-    if (fs.existsSync(goblin.config.ambushFile)) {
-        goblin.ambush = eval(JSONfn.parse(fs.readFileSync(goblin.config.ambushFile)))
+    if (fs.existsSync(goblin.config.files.ambush)) {
+        goblin.ambush = eval(JSONfn.parse(fs.readFileSync(goblin.config.files.ambush)))
     } else {
-        fs.writeFileSync(goblin.config.ambushFile, JSON.stringify([]));
+        fs.writeFileSync(goblin.config.files.ambush, JSON.stringify([]));
     }
     
     return {
