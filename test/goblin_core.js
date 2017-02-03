@@ -80,7 +80,6 @@ describe("Ambush (Lambda) test", function(){
                 goblinDB.ambush.add(fullFunction);
                 expect(goblinDB.ambush.details("testing-callback-function")).to.be.deep.equal(fullFunction);
             });
-            
         });
         
         describe("add(): Error Management", function() {
@@ -131,12 +130,30 @@ describe("Ambush (Lambda) test", function(){
             });
         });
         
-        it("Method remove(): As Expected", function() {
-            // Code...
+        describe("Method remove(): As Expected", function() {
+            it("Simple function. No Arguments and No Callback", function() {
+                goblinDB.ambush.remove("testing-simple-function");
+                expect(goblinDB.ambush.list().length).to.be.equal(2);
+            });
+            
+            it("Function with Arguments. No Callback", function() {
+                goblinDB.ambush.remove("testing-argument-function");
+                expect(goblinDB.ambush.list().length).to.be.equal(1);
+            });  
+
+            it("Function with Arguments and Callback", function() {
+                goblinDB.ambush.remove("testing-callback-function");
+                expect(goblinDB.ambush.list().length).to.be.equal(0);
+            });
         });
         
-        it("Method remove(): As No Expected", function() {
-            // Code...
+        describe("Method remove(): Error Management", function() {
+            it("Wrong Arguments provided: No ID", function() {
+                expect(function () { goblinDB.ambush.remove()}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
+            it("Wrong Arguments provided: No right ID type of data", function() {
+                expect(function () { goblinDB.ambush.remove({id: 1})}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
         });
         
         it("Method update(): As Expected", function() {
