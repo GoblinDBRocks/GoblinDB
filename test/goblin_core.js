@@ -156,12 +156,59 @@ describe("Ambush (Lambda) test", function(){
             });
         });
         
-        it("Method update(): As Expected", function() {
-            // Code...
+        describe("Method update(): As Expected", function() {
+            
+            it("CONCEPT:", function(){
+                goblinDB.ambush.add(simpleFunction);
+                expect(goblinDB.ambush.list().length).to.be.equal(1);
+            })
+            it("CONCEPT-2:", function(){
+                //goblinDB.ambush.add(simpleFunction);
+                expect(goblinDB.ambush.list().length).to.be.equal(1);
+            })
         });
 
-        it("Method update(): As No Expected", function() {
-            // Code...
+        describe("Method update(): Error Management", function() {
+            it("Wrong Arguments provided: No ID", function() {
+                expect(function () { goblinDB.ambush.update()}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
+            
+            it("Wrong Arguments provided: No right ID type of data", function() {
+                expect(function () { goblinDB.ambush.update(1)}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
+            
+            it("No Arguments provided", function() {
+                expect(function () { goblinDB.ambush.update("testing-callback-function") }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
+            });
+
+            it("Wrong Arguments provided: Array", function() {
+                expect(function () { goblinDB.ambush.update("testing-callback-function",[]) }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
+            });
+            
+            it("Wrong Arguments provided: No right ID type of data", function() {
+                expect(function () { goblinDB.ambush.update("testing-callback-function",{
+                    id: 1,
+                    category: [],
+                    action: function(){},
+                })}).to.throw('Ambush saving error: no ID provided or ID is not a string.');
+            });
+            
+            it("Wrong Arguments provided: No right CATEGORY type of data", function() {
+                expect(function () { goblinDB.ambush.update("testing-callback-function",{
+                    id: "test",
+                    category: 1,
+                    action: function(){},
+                })}).to.throw('Ambush saving error: no CATEGORY provided or CATEGORY is not an Array.');
+            });
+            
+            it("Wrong Arguments provided: No right ACTION type of data", function() {
+                expect(function () { goblinDB.ambush.add({
+                    id: "test",
+                    category: [],
+                    action: [],
+                })}).to.throw('Ambush saving error: no ACTION provided or ACTION is not a function.');
+            });
+                        /**/
         });
 
         it("Method list(): As Expected", function() {
@@ -191,26 +238,37 @@ describe("Ambush (Lambda) test", function(){
 });
 
 
-describe("Database tests", function() {
+describe("Database", function() {
     beforeEach(function(done) {
         cleanGoblin(done);
     });
     
     describe("Enviroment:", function(){
-        it("JSON Database: file creation for data", function() {
-            expect(testDB.db).to.be.a.file()
-        });
+        describe("JSON Database:", function(){
+            it("File creation for data", function() {
+                expect(testDB.db).to.be.a.file()
+            });
+    
+            it("File creation for Ambush (Lmabda)", function() {
+                expect(testDB.ambush).to.be.a.file()
+            });
+        })
 
-        it("JSON Database: file creation for Ambush (Lmabda)", function() {
-            expect(testDB.ambush).to.be.a.file()
-        });
-        
-        it("JSON Database: content for Ambush (Lmabda)", function(done) {
-            waitDbContent(10, function(){
-                expect(testDB.ambush).with.content("[]");
-                done();
-            })
-        });
+        describe("JSON Database:", function(){
+            it("Content for data", function(done) {
+                waitDbContent(10, function(){
+                    expect(testDB.db).with.content("{}");
+                    done();
+                })
+            });
+            
+            it("Content for Ambush (Lmabda)", function(done) {
+                waitDbContent(10, function(){
+                    expect(testDB.ambush).with.content("[]");
+                    done();
+                })
+            });
+        })
     })
     
     describe("Events:", function(){
