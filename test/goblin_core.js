@@ -232,12 +232,23 @@ describe("Ambush (Lambda) test", function(){
             });
         });
         
-        describe("deatils(): As Expected", function() {
-            // Code...
+        describe("details(): As Expected", function() {
+            it("Brings all the details of an existing function", function(){
+                expect(goblinDB.ambush.details("testing-simple-function")).to.be.deep.equal(simpleFunction);
+            });
+            it("Brings all the details of a non-existing function", function(){
+                expect(goblinDB.ambush.details("testing-invented")).to.be.equal(undefined);
+            });
         });
 
-        describe("deatils(): Error Management", function() {
-            // Code...
+        describe("details(): Error Management", function() {
+            it("Wrong Arguments provided: No ID", function() {
+                expect(function () { goblinDB.ambush.details()}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
+            
+            it("Wrong Arguments provided: No right ID type of data", function() {
+                expect(function () { goblinDB.ambush.details(1)}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
         });
 
         describe("run(): As Expected", function() {
