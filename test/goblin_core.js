@@ -32,12 +32,13 @@ function cleanUp (file){
 }
 
 describe("Ambush (Lambda) test", function(){
+    var control
     var simpleFunction = {
         id: "testing-simple-function",
         category: ["test"],
         description: "This is a simple function",
         action: function(){
-            return true;
+            control = true;
         }
     };
 
@@ -46,7 +47,7 @@ describe("Ambush (Lambda) test", function(){
         category: ["test", "test-argument"],
         description: "This is a function with arguments",
         action: function(argument){
-            return argument;
+            control = argument;
         }
     };
 
@@ -252,11 +253,43 @@ describe("Ambush (Lambda) test", function(){
         });
 
         describe("run(): As Expected", function() {
-            // Code...
+            it("Simple function. No Arguments and No Callback", function() {
+                control = false;
+                goblinDB.ambush.add(simpleFunction);
+                goblinDB.ambush.run("testing-simple-function");
+                expect(control).to.be.equal(true);
+            });
+            
+            it("Function with Arguments. No Callback", function() {
+                control = false;
+                goblinDB.ambush.add(argumentFunction);
+                goblinDB.ambush.run("testing-argument-function", true);
+                expect(control).to.be.equal(true);
+            });  
+
+            it("Function with Arguments and Callback", function() {
+                control = false;
+                goblinDB.ambush.add(argumentFunction);
+                goblinDB.ambush.run("testing-callback-function", true, function(arg){
+                    control = arg;
+                });
+                expect(control).to.be.equal(true);
+                
+            });
         });
         
         describe("run(): Error Management", function() {
-            // Code...
+            it("Wrong Arguments provided: No ID", function() {
+                expect(function () { goblinDB.ambush.run()}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
+            
+            it("Wrong Arguments provided: No right ID type of data", function() {
+                expect(function () { goblinDB.ambush.run(1)}).to.throw('Ambush error: no ID provided or ID is not a string.');
+            });
+            
+            it("Wrong Arguments provided: No right CALLBACK type of data", function() {
+                expect(function () { goblinDB.ambush.run("test", "test-argument", "callback")}).to.throw('Ambush saving error: no CALLBACK provided or CALLBACK is not a function.');
+            });
         });
     });
 });
