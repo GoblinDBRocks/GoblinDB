@@ -26,6 +26,34 @@
 
 ### [Documentation](http://goblindb.osweekends.com/)
 
+```javascript
+var GDB = require("goblindb");
+
+var goblinDB = GDB();
+
+console.log("Fear the Goblin!")
+
+// Events supported
+goblinDB.on('change', function(changes){
+    console.log("-- change detected!:", changes)
+    console.log("====================")
+});
+
+// Read all Database...
+var originalData = goblinDB.get();
+console.log("originalData:", originalData);
+
+// Store data...
+goblinDB.set({"data": "world!", "data2": "Hiiiii"});
+
+// Update date...
+goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
+
+// Read all Database...
+var currentData = goblinDB.get();
+console.log("currentData:", currentData)
+```
+
 **[Check the official documentation in our website](http://goblindb.osweekends.com/)**
 
 
