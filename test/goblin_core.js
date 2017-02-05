@@ -158,16 +158,97 @@ describe("Ambush (Lambda) test", function(){
         });
         
         describe("update(): As Expected", function() {
-/*            
-            it("CONCEPT:", function(){
-                goblinDB.ambush.add(simpleFunction);
-                expect(goblinDB.ambush.list().length).to.be.equal(1);
+            it("Overwrite the function completely:", function(){
+                var origin = {
+                    id: "testing-origin",
+                    category: ["test"],
+                    description: "This is a simple function",
+                    action: function(){
+                        control = true
+                    }
+                };
+                
+                var after = {
+                    id: "testing-after",
+                    category: ["test-modified"],
+                    description: "This is a modified function",
+                    action: function(){
+                        control = "modified";
+                    }
+                };
+                goblinDB.ambush.add(origin)
+                goblinDB.ambush.update("testing-origin", after);
+                expect(goblinDB.ambush.details("testing-after")).to.be.deep.equal(after)
+                goblinDB.ambush.remove("testing-after");
             })
-            it("CONCEPT-2:", function(){
-                //goblinDB.ambush.add(simpleFunction);
-                expect(goblinDB.ambush.list().length).to.be.equal(1);
+            it("Overwrite the -ID- only:", function(){
+                var origin = {
+                    id: "testing-origin",
+                    category: ["test"],
+                    description: "This is a simple function",
+                    action: function(){
+                        control = true
+                    }
+                };
+
+                goblinDB.ambush.add(origin)
+                goblinDB.ambush.update("testing-origin", {id: "testing-after"});
+                origin.id = "testing-after";
+                expect(goblinDB.ambush.details("testing-after")).to.be.deep.equal(origin)
+                goblinDB.ambush.remove("testing-after");
             })
-*/
+            it("Overwrite the -ACTION- only:", function(){
+                var origin = {
+                    id: "testing-origin",
+                    category: ["test"],
+                    description: "This is a simple function",
+                    action: function(){
+                        control = true
+                    }
+                };
+                var changeFactor = function(){
+                    return "Now... is different!";
+                };
+                goblinDB.ambush.add(origin)
+                goblinDB.ambush.update("testing-origin", {action: changeFactor});
+                origin.action = changeFactor
+                expect(goblinDB.ambush.details("testing-origin")).to.be.deep.equal(origin)
+                goblinDB.ambush.remove("testing-origin");
+            })
+
+            it("Overwrite the -CATEGORY- only:", function(){
+                var origin = {
+                    id: "testing-origin",
+                    category: ["test"],
+                    description: "This is a simple function",
+                    action: function(){
+                        control = true
+                    }
+                };
+                var changeFactor = ["Hello-test"];
+                goblinDB.ambush.add(origin)
+                goblinDB.ambush.update("testing-origin", {category: changeFactor});
+                origin.category = changeFactor
+                expect(goblinDB.ambush.details("testing-origin")).to.be.deep.equal(origin)
+                goblinDB.ambush.remove("testing-origin");
+            })
+
+            it("Overwrite the -DESCRIPTION- only:", function(){
+                var origin = {
+                    id: "testing-origin",
+                    category: ["test"],
+                    description: "This is a simple function",
+                    action: function(){
+                        control = true
+                    }
+                };
+                var changeFactor = "Hello-test";
+                goblinDB.ambush.add(origin)
+                goblinDB.ambush.update("testing-origin", {description: changeFactor});
+                origin.description = changeFactor
+                expect(goblinDB.ambush.details("testing-origin")).to.be.deep.equal(origin)
+                goblinDB.ambush.remove("testing-origin");
+            })
         });
 
         describe("update(): Error Management", function() {
