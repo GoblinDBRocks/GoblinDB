@@ -478,37 +478,30 @@ describe("Database", function() {
         
         it("Method set(): Replace All", function() {
             goblinDB.set({"hello": "there", "more-data": "yeah!"});
-            
             expect(goblinDB.get()).to.deep.equal({"hello": "there", "more-data": "yeah!"});
         });
         it("Method set(): Replace Key Content", function() {
             goblinDB.set({"more": "details"}, "more-data");
-            
             expect(goblinDB.get("more-data")).to.deep.equal({"more": "details"});
         }); 
         it("Method push(): Creation", function() {
             goblinDB.push({"more":"data"})
-            
             expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
         });
         it("Method getConfig(): Content", function() {
-
             expect(goblinDB.getConfig()).to.deep.equal({"fileName": "./test/testDB", "files": {"ambush": "./test/testDB.goblin", "db": "./test/testDB.json"}, logPrefix: '[GoblinDB]', recordChanges: true });
         });
         it("Method updateConfig(): Changes", function() {
             goblinDB.updateConfig({logPrefix: '[GoblinRocks!]', "extra": "extra-value"});
-            
             expect(goblinDB.getConfig()).to.deep.equal({"fileName": "./test/testDB", "files": {"ambush": "./test/testDB.goblin", "db": "./test/testDB.json"}, logPrefix: '[GoblinRocks!]', extra: "extra-value", recordChanges: true });
         });
         it("Method stopStorage(): Changes", function() {
             goblinDB.stopStorage();
-        
             expect(goblinDB.getConfig().recordChanges).to.be.equal(false);
         });
         it("Method startStorage(): Changes", function() {
             goblinDB.stopStorage();
             goblinDB.startStorage();
-        
             expect(goblinDB.getConfig().recordChanges).to.be.equal(true);
         });
     })
