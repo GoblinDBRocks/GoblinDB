@@ -1,10 +1,20 @@
 var configGoblin = require("./config");
-var helpers = require("./goblin_helpers");
 var fs = require('fs');
 var _ = require('lodash');
 var O = require('observed');
 var randomstring = require("randomstring");
 var JSONfn = require('json-fn');
+
+function configValidation(configuration){
+    configuration = typeof(configuration) === "object" ?  configuration : {};
+    configuration.fileName = configuration.fileName ? configuration.fileName : "./goblin_db";
+    configuration.files = {
+        ambush: configuration.fileName+".goblin",
+        db: configuration.fileName+".json"
+    }
+    configuration.recordChanges = configuration.recordChanges || true;
+    return configuration;
+}
 
 /* ---- Basic Goblin Skeleton ---- */
 var goblin = {
@@ -72,7 +82,7 @@ eventEmitter.on('change', function(changes){
 
 module.exports = function(config){
     // Validations
-    config = helpers.configValidation(config);
+    config = configValidation(config);
     goblin.config = _.merge({}, goblin.config, config);
     
     // Read current database
