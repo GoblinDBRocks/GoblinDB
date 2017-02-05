@@ -99,7 +99,13 @@ module.exports = function(config){
                 if(!object.action || typeof(object.action) !== "function") throw configGoblin.logPrefix, 'Ambush saving error: no ACTION provided or ACTION is not a function.';
                 object.description = object.description && typeof(object.description) === "string" ? object.description : false;
                 // Action
-                goblin.ambush.push(object)
+                var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {"id": object.id}));
+                if(index === -1) {
+                    goblin.ambush.push(object);
+                } else {
+                    console.log(configGoblin.logPrefix, 'Ambush ADD error: This ambush function was registered before.');
+                }
+                
             },
             remove: function(id){
                 // Validation
@@ -128,7 +134,12 @@ module.exports = function(config){
                 }
               // Action
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
-                goblin.ambush[index] = _.merge(goblin.ambush[index], object);
+                
+                if(index !== -1) {
+                    goblin.ambush[index] = _.merge(goblin.ambush[index], object);;
+                } else {
+                    console.log(configGoblin.logPrefix, 'Ambush UPDATE error: This ambush function was not registered before.');
+                }
             },
             details: function(id){
               // Validation
@@ -138,7 +149,7 @@ module.exports = function(config){
                 return goblin.ambush[index]
             },
             list: function(category){
-                var list;
+                var list = [];
                 if(category && typeof(category) === "string"){
                     list = _(goblin.ambush).filter(function(current){
                         return _.includes(current.category, category);
@@ -157,7 +168,12 @@ module.exports = function(config){
                 }
               // Action
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
-                goblin.ambush[index].action(parameter, callback);
+                
+                if(index !== -1) {
+                    goblin.ambush[index].action(parameter, callback);
+                } else {
+                    console.log(configGoblin.logPrefix, 'Ambush RUN error: no ambush function registered with that ID');
+                }
             }
         },
         on: goblin.hooks.add,
