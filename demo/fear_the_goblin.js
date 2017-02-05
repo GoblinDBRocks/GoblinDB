@@ -12,13 +12,13 @@ goblinDB.on('change', function(changes){
 });
 
 var datosOriginales = goblinDB.get();
-//console.log("datosOriginales:", datosOriginales);
+console.log("datosOriginales:", datosOriginales);
 
 goblinDB.set({"data": "world!", "data2": "Hiiiii"});
 goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
 
 var datosActuales = goblinDB.get();
-//console.log("datosActuales:", datosActuales)
+console.log("datosActuales:", datosActuales)
 
 console.log("Let's make something fun....")
 http.get("http://eventpoints.osweekends.com/api/events", function(res){
@@ -56,3 +56,10 @@ goblinDB.ambush.run("testing-goblin", "I love Goblin", function(arg){
     console.log("This is from the Function storage in Goblin:", arg);
 })
 
+goblinDB.ambush.update("testing-callback-function",{
+    id: "test",
+    category: 1,
+    action: function(){},
+})
+
+console.log(goblinDB.ambush.list())
