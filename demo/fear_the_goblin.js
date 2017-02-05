@@ -1,4 +1,4 @@
-var GDB = require("./goblin");
+var GDB = require("../goblin");
 var http = require("http");
 
 var goblinDB = GDB();
@@ -11,14 +11,14 @@ goblinDB.on('change', function(changes){
     console.log("====================")
 });
 
-var datosOriginales = goblinDB.get();
-console.log("datosOriginales:", datosOriginales);
+var originalData = goblinDB.get();
+console.log("originalData:", originalData);
 
 goblinDB.set({"data": "world!", "data2": "Hiiiii"});
 goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
 
-var datosActuales = goblinDB.get();
-console.log("datosActuales:", datosActuales)
+var currentData = goblinDB.get();
+console.log("currentData:", currentData)
 
 console.log("Let's make something fun....")
 http.get("http://eventpoints.osweekends.com/api/events", function(res){
@@ -58,7 +58,7 @@ goblinDB.ambush.run("testing-goblin", "I love Goblin", function(arg){
 
 goblinDB.ambush.update("testing-callback-function",{
     id: "test",
-    category: 1,
+    category: ["new thing..."],
     action: function(){},
 })
 
