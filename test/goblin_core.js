@@ -3,11 +3,34 @@ var chai = require("chai"),
     gutil = require('gulp-util'),
     fs = require('fs');
 
+// Plugins    
+require('mocha-sinon');
 chai.use(require('chai-fs'));
 
 var testDB = {db: "./test/testDB.json", ambush: "./test/testDB.goblin"}
 var GDB = require("../goblin");
 var goblinDB = GDB({"fileName": "./test/testDB"});
+
+// Mute feature for console.log
+// @see: http://stackoverflow.com/a/1215400
+var logger = function(){
+    var oldConsoleLog = null;
+    var pub = {};
+
+    pub.enableLogger =  function enableLogger() {
+        if(oldConsoleLog == null)
+            return;
+
+        console.log = oldConsoleLog;
+    };
+
+    pub.disableLogger = function disableLogger(){
+        oldConsoleLog = console.log;
+        console.log = function() {};
+    };
+
+    return pub;
+}();
 
 
 function cleanGoblin (callback) {
@@ -61,11 +84,7 @@ describe("Ambush (Lambda) test", function(){
     };
     
     describe("Methods:", function(){
-        // Code...
-        beforeEach(function(){
-            // Code...
-        });
-        
+
         describe("add(): As Expected", function() {
             it("Simple function. No Arguments and No Callback", function() {
                 goblinDB.ambush.add(simpleFunction);
@@ -84,6 +103,14 @@ describe("Ambush (Lambda) test", function(){
         });
         
         describe("add(): Error Management", function() {
+            it("Same ID conflict Management", function (){
+                var currentList = goblinDB.ambush.list()
+                logger.disableLogger();
+                goblinDB.ambush.add(simpleFunction);
+                logger.enableLogger();
+                var actualList = goblinDB.ambush.list()
+                expect(currentList).to.be.deep.equal(actualList);
+            })
             it("No Arguments provided", function() {
                 expect(function () { goblinDB.ambush.add() }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
             });
@@ -252,6 +279,14 @@ describe("Ambush (Lambda) test", function(){
         });
 
         describe("update(): Error Management", function() {
+            it("Wrong ID conflict Management", function (){
+                var currentList = goblinDB.ambush.list()
+                logger.disableLogger();
+                goblinDB.ambush.update("invented-id", {category: ["intented-data"]});
+                logger.enableLogger();
+                var actualList = goblinDB.ambush.list()
+                expect(currentList).to.be.deep.equal(actualList);
+            })
             it("Wrong Arguments provided: No ID", function() {
                 expect(function () { goblinDB.ambush.update()}).to.throw('Ambush error: no ID provided or ID is not a string.');
             });
@@ -360,6 +395,20 @@ describe("Ambush (Lambda) test", function(){
         });
         
         describe("run(): Error Management", function() {
+            it("Wrong ID conflict Management", function() {
+                control = false;
+                goblinDB.ambush.add(argumentFunction);
+                goblinDB.ambush.run("testing-callback-function", true, function(arg){
+                    control = arg;
+                });
+                expect(control).to.be.equal(true);
+                goblinDB.ambush.remove("testing-callback-function");
+                goblinDB.ambush.run("testing-callback-function", false, function(arg){
+                    control = arg;
+                });
+                expect(control).to.be.equal(true);
+            });
+            
             it("Wrong Arguments provided: No ID", function() {
                 expect(function () { goblinDB.ambush.run()}).to.throw('Ambush error: no ID provided or ID is not a string.');
             });
