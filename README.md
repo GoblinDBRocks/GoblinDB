@@ -7,6 +7,11 @@
 
 ![goblin](https://raw.githubusercontent.com/GoblinDBRocks/Art/master/high_resolution/goblin_db_logo-01.png)
 
+### Fear the Goblin!
+
+**An amazing, simple and fun database for humans**
+
+
 ### Goblin Philosophy
 
 - Coding is fun, so databases must be fun too.
@@ -19,11 +24,12 @@
 - Data is not the only stuff that can be store in a database.
 - We prefer ambush functions over lambda functions. As you know... we're talking about anonymous functions.
 
-#### [Documentation](http://goblindb.osweekends.com/)
+### [Documentation](http://goblindb.osweekends.com/)
 
 **[Check the official documentation in our website](http://goblindb.osweekends.com/)**
 
-#### Demo
+
+### Demo
 You can run a demo in 4 steps!
 
 1. Clone this repository
@@ -166,9 +172,3 @@ Just to solve issues with NPM.
 **Notes:**
 Just a "Hello world"
 
-
-### Fear the Goblin!
-
-**An amazing, simple and fun database for humans**
-
-![goblin2](https://raw.githubusercontent.com/GoblinDBRocks/Art/master/high_resolution/goblin_db_logo-02.png)
