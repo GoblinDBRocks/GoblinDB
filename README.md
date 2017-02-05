@@ -3,7 +3,7 @@
 ![shieldsIO](https://img.shields.io/github/license/UlisesGascon/GoblinDB.svg)
 ![shieldsIO](https://img.shields.io/david/UlisesGascon/GoblinDB.svg)
 
-# GoblinDB
+# [GoblinDB](http://goblindb.osweekends.com/)
 
 ![goblin](https://raw.githubusercontent.com/GoblinDBRocks/Art/master/high_resolution/goblin_db_logo-01.png)
 
@@ -18,12 +18,46 @@
 - Data is the king.
 - Data should be stored in the system as a file when a change happend.
 - Data storage in the system must be hackable.
-- The database can lead or connect your server components
-- Events are great... because we are asynchronous
+- The database can lead or connect your server components.
+- Events are great... because we are asynchronous.
 - We prefer facts over promises: facts are there, promises maybe yes or not. In fact, we're talking about callbacks.
+- Data is not the only stuff that can be store in a database.
+- We prefer ambush functions over lambda functions. As you know... we're talking about anonymous functions.
+
+### [Documentation](http://goblindb.osweekends.com/)
+
+```javascript
+var GDB = require("goblindb");
+
+var goblinDB = GDB();
+
+console.log("Fear the Goblin!")
+
+// Events supported
+goblinDB.on('change', function(changes){
+    console.log("-- change detected!:", changes)
+    console.log("====================")
+});
+
+// Read all Database...
+var originalData = goblinDB.get();
+console.log("originalData:", originalData);
+
+// Store data...
+goblinDB.set({"data": "world!", "data2": "Hiiiii"});
+
+// Update date...
+goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
+
+// Read all Database...
+var currentData = goblinDB.get();
+console.log("currentData:", currentData)
+```
+
+**[Check the official documentation in our website](http://goblindb.osweekends.com/)**
 
 
-#### Demo
+### Demo
 You can run a demo in 4 steps!
 
 1. Clone this repository
@@ -43,166 +77,7 @@ You can run a demo in 4 steps!
 
 4. Run *fear_the_goblin.js*
 ```bash
-    node fear_the_goblin.js
-```
-
-#### Documentation
-
-**Add it to your Node.js project**
-- In your terminal...
-```bash
-    npm install goblindb --save
-```
-- In your file..
-```javascript
-    var GDB = require("goblindb");
-    var http = require("http");
-    
-    var goblinDB = GDB();
-```
-
-**Reitrieving data**
-
-By default Goblin will create an empty json file as database storage, if the file exist it will added to Goblin.
-
-Just for the example, current database status... as you can see is a JSON file:
-- *goblin_bd.json*:
-```json
-{"hello":"world!","array":["aaaa",true,5],"objectData":{"property": 1}}
-```
-
-- *get*. Return the information from a key or the whole database
-```javascript
-    var GDB = require("goblindb");
-    var http = require("http");
-    
-    var goblinDB = GDB();
-    
-    console.log(goblinDB.get())
-    // {"hello":"world!","array":["aaaa",true,5],"objectData":{"property": 1}}
-    
-    console.log(goblinDB.get("hello"))
-    // {"hello":"world!"}
-```
-
-**Saving data**
-
-You have many options to save data. As Goblin is a key/value database you need to know what is the key that you want to use/create. 
-
-You can storage all the data that you want except functions. Until the next release.
-
-- *set(key, data)*. Write or replace data to a defined key (optional)
-```javascript
-    var GDB = require("goblindb");
-    var http = require("http");
-    
-    var goblinDB = GDB();
-    
-    // set data in db.admin
-    goblinDB.set({"name": "Ulises", "role": "developer"}, "admin");
-    
-    // set data in root
-    goblinDB.set({"hello": "Human...!"});
-```
-
-- *push(data)*. Write data in a new key (random name added)
-```javascript
-    var GDB = require("goblindb");
-    var http = require("http");
-    
-    var goblinDB = GDB();
-    
-    goblinDB.push({"name": "Ulises", "role": "developer"})
-```
-
-- *update(data, key)*. Add and modify data to a defined key 
-```javascript
-    var GDB = require("goblindb");
-    var http = require("http");
-    
-    var goblinDB = GDB();
-    
-    goblinDB.update({"name": "CodingCarlos", "friends": ["Ulises", "Jose"]}, "admin");
-```
-
-**Fun with Events**
-You can use events in order to react to changes in the database. All the events are managed internally by Goblin inside as hooks.
-
-You can specify the trigger event:
-- add
-- update
-- delete
-- reconfigure
-- change, in any case it will be triggered.
-
-The event will return an object that contains previous data and current data.
-At the moment the the listeners can be added to the database root, but in the next release it will possible to focus in on or more specific paths
-
-- *on()*, Add a new function to be triggered on a specific change.
-```javascript
-var GDB = require("goblindb");
-var http = require("http");
-
-var goblinDB = GDB();
-
-goblinDB.on('change', function(changes){
-    console.log("cambio:", changes)
-    console.log("====================")
-});
-```
-
-- *off()*, Remove a previous record event
-```javascript
-var GDB = require("goblindb");
-var http = require("http");
-
-var goblinDB = GDB();
-
-goblinDB.on('change', function(changes){
-    console.log("cambio:", changes)
-    console.log("====================")
-});
-
-// more code...
-
-goblinDB.off('change', function(changes){
-    console.log("cambio:", changes)
-    console.log("====================")
-});
-```
-
-**Extra features**
-Some extra features that maybe can help you.
-
-- *getConfig() & updateConfig*, modify/replace/extend configuration.
-```javascript
-var GDB = require("goblindb");
-var http = require("http");
-
-var goblinDB = GDB();
-
-console.log(goblinDB.getConfig())
-// { logPrefix: '[GoblinDB]', file: './goblin_bd.json', recordChanges: true }
-
-goblinDB.updateConfig({ logPrefix: '[GoblinDB-modify]'})
-
-console.log(goblinDB.getConfig())
-// { logPrefix: '[GoblinDB-modify]', file: './goblin_bd.json', recordChanges: true }
-```
-
-- *stopStorage() & startStorage()*. enable/disable the storage in disk.
-```javascript
-var GDB = require("goblindb");
-var http = require("http");
-
-var goblinDB = GDB();
-
-goblinDB.stopStorage();
-
-// more code that will not touch be stored in the disk...
-
-goblinDB.startStorage(); 
-// Now the current GoblinDB will be stored in disk and it will keep doing it
+    node demo/fear_the_goblin.js
 ```
 
 ### Testing
@@ -215,39 +90,59 @@ npm test
 
 ### Future Implementations
 
-![goblin2](https://raw.githubusercontent.com/GoblinDBRocks/Art/master/high_resolution/goblin_db_logo-02.png)
-
-
-- [ ] Logo, branding...
-- [ ] Landing Page.
 - [ ] Support multidimensional navigation in the database (.ref() method).
 - [ ] Support to chain methods.
-- [ ] Add basic query methods.
-- [ ] Add Avance query methods.
+- [ ] Puglin documentation exameple
+- [ ] Add basic query methods as a plugin.
+- [ ] Add Avance query methods as a plugin.
 - [ ] Add support to .once() method for events.
 - [ ] Add support to UID in events.
-- [ ] Support .goblin extension for database in order to record raw database with objects, functions...
-- [ ] Support .json compatibility for database.
 - [ ] Additional events to support (config changes, etc...).
-- [ ] Add additional support to Backup goblin with other databases like Firebase, Mongo... in real time.
+- [ ] Add additional support to Backup goblin with other databases like Firebase, Mongo... in real time as a plugin.
 - [ ] Full documentation in JSDoc.
-- [ ] Gulp Tasks Improves.
-- [ ] Example Folder.
+- [ ] Gulp Tasks Improvement.
 - [ ] Test support for Events using Sinon.
 - [ ] Test refactor in order to separate more the test cases.
 
+
+### Plugins
+
+- __[GoblinSocket](https://github.com/CodingCarlos/GoblinSocket).__ *WebSocket interface for GoblinDB using SocketIO*
+
 ### Achievements
 
-### v.0.0.6
+#### v.0.0.7
+
+**Main target:**
+- Ambush support
+
+**Bugs Fixed:**
+- No need to require http module, in documentation examples
+
+**Features:**
+- Database testing improved
+- Added optional features like parameters and callbacks for Ambush (lambda) functions
+- Added automatic save for Ambush
+- Added .goblin extension in order to store ambush operations
+- Added Testing to support ambush features
+- Added goblin.ambush as container
+- Added goblin.ambush.add(),
+- Added goblin.ambush.remove(),
+- Added goblin.ambush.update(),
+- Added goblin.ambush.list(),
+- Added goblin.ambush.details(),
+- Added goblin.ambush.run()
+
+#### v.0.0.6
 
 - Readme improved
 
-### v.0.0.5
+#### v.0.0.5
 
 - [New Art](https://github.com/GoblinDBRocks/Art/)
 - [New Organization](https://github.com/GoblinDBRocks/)
 
-### v.0.0.4
+#### v.0.0.4
 
 **Features:**
 - Documentation improved
@@ -257,12 +152,12 @@ npm test
 - [Database storage location](https://github.com/UlisesGascon/GoblinDB/issues/4)
 
 
-### v.0.0.3
+#### v.0.0.3
 
 **Notes:**
 Just to solve issues with NPM.
 
-### v.0.0.2
+#### v.0.0.2
 
 **Main target:**
 - Develop the basics key functionalities (methods)
@@ -298,9 +193,10 @@ Just to solve issues with NPM.
 - Added Method update
 
 
-### v.0.0.1
+#### v.0.0.1
 
 **Features:**
 
 **Notes:**
 Just a "Hello world"
+
