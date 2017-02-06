@@ -1,9 +1,11 @@
-var configGoblin = require("./config");
-var fs = require('fs');
-var _ = require('lodash');
-var O = require('observed');
-var randomstring = require("randomstring");
-var JSONfn = require('json-fn');
+var configGoblin = require("./config"),
+    fs = require('fs'),
+    _ = require('lodash'),
+    randomstring = require("randomstring"),
+    JSONfn = require('json-fn');
+
+// Object.observe polyfill/shim
+if(!Object.observe) require("proxy-observe");
 
 function configValidation(configuration){
     configuration = typeof(configuration) === "object" ?  configuration : {};
@@ -44,38 +46,36 @@ goblin.hooks.remove = function(event, callback){
 
 /* ---- Goblin Internal Events + Hooks Execution ---- */
 
-var O = require('observed')
-var eventEmitter = O(goblin)
-
-eventEmitter.on('change', function(changes){
-    var err = false
-    if (changes.path === "ambush") {
+goblin.ambush = Array.observe(goblin.ambush, function(changeset) {
+    fs.writeFile(goblin.config.files.ambush, "", function(error) {
+        if(error) {
+            throw configGoblin.logPrefix, 'Database cleaning before saving error in file System:', error;
+        }
         fs.writeFile(goblin.config.files.ambush, JSONfn.stringify(goblin.ambush), function(error) {
             if(error) {
-                err = error;
-                throw configGoblin.logPrefix, 'Database saving error in file System:', err;
+                throw configGoblin.logPrefix, 'Database saving error in file System:', error;
+            }
+        });
+    });
+
+});
+
+goblin.db = Object.observe(goblin.db, function(changes) {
+    // Recording data in the file
+    if(goblin.config.recordChanges){
+        fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
+            if(error) {
+                throw configGoblin.logPrefix, 'Database saving error in file System:', error;
             }
         });
     }
-    if (changes.path === "db") {
-        // Recording data in the file
-        if(goblin.config.recordChanges){
-            fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
-                if(error) {
-                    err = error;
-                    throw configGoblin.logPrefix, 'Database saving error in file System:', err;
-                }
-            });
-        }
-        
-        // Hooks management
-        goblin.hooks.repositoy.forEach(function(hook){
-            if(hook.event ===  changes.type || hook.event === "change"){
-                hook.callback({"value": changes.value, "oldValue": changes.oldValue})
-            }
-        })
 
-    }
+    // Hooks management
+    goblin.hooks.repositoy.forEach(function(hook){
+        if(hook.event ===  changes.type || hook.event === "change"){
+            hook.callback({"value": changes.object, "oldValue": changes.oldValue})
+        }
+    })
 });
 
 /* ---- Goblin Module Exportation ---- */
@@ -84,7 +84,7 @@ module.exports = function(config){
     // Validations
     config = configValidation(config);
     goblin.config = _.merge({}, goblin.config, config);
-    
+
     // Read current database
     if (fs.existsSync(goblin.config.files.db)) {
         goblin.db = JSON.parse(fs.readFileSync(goblin.config.files.db))
@@ -98,7 +98,7 @@ module.exports = function(config){
     } else {
         fs.writeFileSync(goblin.config.files.ambush, JSON.stringify([]));
     }
-    
+
     return {
         ambush: {
             add: function(object){
@@ -115,12 +115,12 @@ module.exports = function(config){
                 } else {
                     console.log(configGoblin.logPrefix, 'Ambush ADD error: This ambush function was registered before.');
                 }
-                
+
             },
             remove: function(id){
                 // Validation
                 if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Ambush error: no ID provided or ID is not a string.';
-                
+
                 // Action
                 _.remove(goblin.ambush, function(current) {
                     return current.id === id;
@@ -144,7 +144,7 @@ module.exports = function(config){
                 }
               // Action
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
-                
+
                 if(index !== -1) {
                     goblin.ambush[index] = _.merge(goblin.ambush[index], object);;
                 } else {
@@ -168,7 +168,7 @@ module.exports = function(config){
                     list = _(goblin.ambush).map('id').value();
                 }
                 return list;
-                
+
             },
             run: function(id, parameter, callback){
               // Validation
@@ -178,7 +178,7 @@ module.exports = function(config){
                 }
               // Action
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
-                
+
                 if(index !== -1) {
                     goblin.ambush[index].action(parameter, callback);
                 } else {
@@ -209,7 +209,7 @@ module.exports = function(config){
         },
         push: function (data){
             var newKey = randomstring.generate();
-            
+
             if(data && typeof(data) === "object"){
                 goblin.db[newKey] = data;
             } else {
@@ -235,5 +235,5 @@ module.exports = function(config){
             }
         }
     }
-    
+
 }
