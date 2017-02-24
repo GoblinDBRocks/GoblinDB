@@ -30,7 +30,7 @@ http.get("http://eventpoints.osweekends.com/api/events", function(res){
 
     res.on('end', function(){
         goblinDB.update({"events": JSON.parse(body)});
-        console.log("Check", goblinDB.getConfig().file);
+        console.log("Check", goblinDB.getConfig().files);
     });
 }).on('error', function(e){
     console.log("Got an error: ", e);
