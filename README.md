@@ -111,6 +111,15 @@ npm test
 
 ### Achievements
 
+#### v.0.0.8
+
+**Main target:**
+- Improve architecture & compatibility
+
+**Features:**
+- Native Events now supported.
+- No need to use Object.observe or proxy ECMA6 alternatives.
+
 #### v.0.0.7
 
 **Main target:**

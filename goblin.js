@@ -1,9 +1,17 @@
-var configGoblin = require("./config");
-var fs = require('fs');
-var _ = require('lodash');
-var O = require('observed');
-var randomstring = require("randomstring");
-var JSONfn = require('json-fn');
+var configGoblin = require("./config"),
+    fs = require('fs'),
+    EventEmitter = require('events'),
+    _ = require('lodash'),
+    randomstring = require("randomstring"),
+    JSONfn = require('json-fn');
+
+/* --- Goblin Internal Events --- */
+
+var ambushEmitter = new EventEmitter();
+var goblinDataEmitter = new EventEmitter();
+
+
+/* --- Goblin Tools --- */
 
 function configValidation(configuration){
     configuration = typeof(configuration) === "object" ?  configuration : {};
@@ -44,39 +52,41 @@ goblin.hooks.remove = function(event, callback){
 
 /* ---- Goblin Internal Events + Hooks Execution ---- */
 
-var O = require('observed')
-var eventEmitter = O(goblin)
-
-eventEmitter.on('change', function(changes){
-    var err = false
-    if (changes.path === "ambush") {
+ambushEmitter.on("change", function(){
+    fs.writeFile(goblin.config.files.ambush, "", function(error) {
+        if(error) {
+            throw configGoblin.logPrefix, 'Database cleaning before saving error in file System:', error;
+        }
         fs.writeFile(goblin.config.files.ambush, JSONfn.stringify(goblin.ambush), function(error) {
             if(error) {
-                err = error;
-                throw configGoblin.logPrefix, 'Database saving error in file System:', err;
+                throw configGoblin.logPrefix, 'Database saving error in file System:', error;
+            }
+        });
+    });
+    
+    // Ambush Events External hooks to be added here in next release.
+    // Filters Object: type, value, oldValue
+});
+
+
+
+goblinDataEmitter.on("change", function(details){
+    if(goblin.config.recordChanges){
+        fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
+            if(error) {
+                throw configGoblin.logPrefix, 'Database saving error in file System:', error;
             }
         });
     }
-    if (changes.path === "db") {
-        // Recording data in the file
-        if(goblin.config.recordChanges){
-            fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
-                if(error) {
-                    err = error;
-                    throw configGoblin.logPrefix, 'Database saving error in file System:', err;
-                }
-            });
-        }
-        
-        // Hooks management
-        goblin.hooks.repositoy.forEach(function(hook){
-            if(hook.event ===  changes.type || hook.event === "change"){
-                hook.callback({"value": changes.value, "oldValue": changes.oldValue})
-            }
-        })
 
-    }
+    // Hooks management
+    goblin.hooks.repositoy.forEach(function(hook){
+        if(hook.event ===  details.type || hook.event === "change"){
+            hook.callback({"value": details.value, "oldValue": details.oldValue})
+        }
+    })
 });
+
 
 /* ---- Goblin Module Exportation ---- */
 
@@ -84,7 +94,7 @@ module.exports = function(config){
     // Validations
     config = configValidation(config);
     goblin.config = _.merge({}, goblin.config, config);
-    
+
     // Read current database
     if (fs.existsSync(goblin.config.files.db)) {
         goblin.db = JSON.parse(fs.readFileSync(goblin.config.files.db))
@@ -98,7 +108,7 @@ module.exports = function(config){
     } else {
         fs.writeFileSync(goblin.config.files.ambush, JSON.stringify([]));
     }
-    
+
     return {
         ambush: {
             add: function(object){
@@ -112,19 +122,24 @@ module.exports = function(config){
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {"id": object.id}));
                 if(index === -1) {
                     goblin.ambush.push(object);
+                    ambushEmitter.emit('change', {'type': 'add', 'value': object});
                 } else {
                     console.log(configGoblin.logPrefix, 'Ambush ADD error: This ambush function was registered before.');
                 }
-                
+
             },
             remove: function(id){
                 // Validation
                 if(!id || typeof(id) !== "string") throw configGoblin.logPrefix, 'Ambush error: no ID provided or ID is not a string.';
                 
                 // Action
+                ambushEmitter.emit('change', {'type': 'remove', 'oldValue': goblin.ambush[id]});
+                
                 _.remove(goblin.ambush, function(current) {
                     return current.id === id;
                 });
+                
+                
             },
             update: function(id, object){
               // Validations
@@ -144,9 +159,11 @@ module.exports = function(config){
                 }
               // Action
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
-                
+
                 if(index !== -1) {
-                    goblin.ambush[index] = _.merge(goblin.ambush[index], object);;
+                    var oldValue = goblin.ambush[index];
+                    goblin.ambush[index] = _.merge(goblin.ambush[index], object);
+                    ambushEmitter.emit('change', {'type': 'update', 'oldValue': oldValue, 'value': goblin.ambush[index]});
                 } else {
                     console.log(configGoblin.logPrefix, 'Ambush UPDATE error: This ambush function was not registered before.');
                 }
@@ -168,7 +185,7 @@ module.exports = function(config){
                     list = _(goblin.ambush).map('id').value();
                 }
                 return list;
-                
+
             },
             run: function(id, parameter, callback){
               // Validation
@@ -178,7 +195,7 @@ module.exports = function(config){
                 }
               // Action
                 var index = _.indexOf(goblin.ambush, _.find(goblin.ambush, {id}));
-                
+
                 if(index !== -1) {
                     goblin.ambush[index].action(parameter, callback);
                 } else {
@@ -209,8 +226,9 @@ module.exports = function(config){
         },
         push: function (data){
             var newKey = randomstring.generate();
-            
+
             if(data && typeof(data) === "object"){
+                goblinDataEmitter.emit('change', {'type': 'push', 'value': data, 'key': newKey});
                 goblin.db[newKey] = data;
             } else {
                 throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
@@ -218,8 +236,10 @@ module.exports = function(config){
         },
         set: function(data, point){
             if(point && typeof(point) === "string" && data && typeof(data) === "object"){
+                goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db[point], 'key': point});
                 goblin.db[point] = data;
             } else if (!point && data && typeof(data) === "object"){
+                goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db});
                 goblin.db = data;
             } else {
                 throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
@@ -227,13 +247,17 @@ module.exports = function(config){
         },
         update: function(data, point){
             if(point && typeof(point) === "string" && typeof(data) === "object"){
+                var oldValue = goblin.db[point];
                 goblin.db[point] = _.merge({}, goblin.db, data);
+                goblinDataEmitter.emit('change', {'type': 'update', 'value': goblin.db[point], 'oldValue': oldValue, 'key': point});
             } else if (!point && typeof(data) === "object"){
+                var oldValue = goblin.db;
                 goblin.db = _.merge({}, goblin.db, data);
+                goblinDataEmitter.emit('change', {'type': 'update', 'value': goblin.db, 'oldValue': oldValue});
             } else {
                 throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
             }
         }
     }
-    
+
 }
