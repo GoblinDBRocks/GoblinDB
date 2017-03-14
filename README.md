@@ -16,7 +16,7 @@
 
 - Coding is fun, so databases must be fun too.
 - Data is the king.
-- Data should be stored in the system as a file when a change happend.
+- Data should be stored in the system as a file whenever a change happens.
 - Data storage in the system must be hackable.
 - The database can lead or connect your server components.
 - Events are great... because we are asynchronous.
@@ -92,13 +92,13 @@ npm test
 
 - [ ] Support multidimensional navigation in the database (.ref() method).
 - [ ] Support to chain methods.
-- [ ] Puglin documentation exameple
+- [ ] Plugin documentation example
 - [ ] Add basic query methods as a plugin.
 - [ ] Add Avance query methods as a plugin.
 - [ ] Add support to .once() method for events.
 - [ ] Add support to UID in events.
 - [ ] Additional events to support (config changes, etc...).
-- [ ] Add additional support to Backup goblin with other databases like Firebase, Mongo... in real time as a plugin.
+- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
 - [ ] Full documentation in JSDoc.
 - [ ] Gulp Tasks Improvement.
 - [ ] Test support for Events using Sinon.
