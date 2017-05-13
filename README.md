@@ -24,6 +24,12 @@
 - Data is not the only stuff that can be store in a database.
 - We prefer ambush functions over lambda functions. As you know... we're talking about anonymous functions.
 
+### IMPORTANT!
+
+GobliDB is not ready for production. It is an experimental database, most of the features are under development... You can use it now, but there is a lot of work pending. 
+
+**We will release a production ready version soon, please keep in touch**
+
 ### [Documentation](http://goblindb.osweekends.com/)
 
 ```javascript
