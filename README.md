@@ -2,6 +2,7 @@
 ![shieldsIO](https://img.shields.io/github/release/UlisesGascon/GoblinDB.svg)
 ![shieldsIO](https://img.shields.io/github/license/UlisesGascon/GoblinDB.svg)
 ![shieldsIO](https://img.shields.io/david/UlisesGascon/GoblinDB.svg)
+[![Build Status](https://travis-ci.org/GoblinDBRocks/GoblinDB.svg?branch=master)](https://travis-ci.org/GoblinDBRocks/GoblinDB)
 
 # [GoblinDB](http://goblindb.osweekends.com/)
 
@@ -214,4 +215,8 @@ Just to solve issues with NPM.
 
 **Notes:**
 Just a "Hello world"
+
+----------------------------------
+
+Dev status: [![Build Status](https://travis-ci.org/GoblinDBRocks/GoblinDB.svg?branch=dev)](https://travis-ci.org/GoblinDBRocks/GoblinDB)
 
