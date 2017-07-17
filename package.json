@@ -1,11 +1,12 @@
 {
   "name": "goblindb",
-  "version": "0.0.2",
+  "version": "0.0.8",
   "description": "GoblinDB | Fear the Goblin! | An amazing, simple and fun database for humans",
-  "main": "goblin.js",
+  "main": "./goblin.js",
   "scripts": {
     "test": "gulp test"
   },
+  "readme": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/UlisesGascon/GoblinDB.git"
@@ -34,11 +35,13 @@
   },
   "homepage": "https://github.com/UlisesGascon/GoblinDB#readme",
   "dependencies": {
+    "json-fn": "1.1.1",
     "lodash": "4.17.4",
-    "observed": "1.1.2",
     "randomstring": "1.1.5"
   },
   "devDependencies": {
+    "mocha-sinon": "1.1.6",
+    "sinon": "1.17.7",
     "chai": "3.5.0",
     "chai-fs": "1.0.0",
     "gulp": "3.9.1",
