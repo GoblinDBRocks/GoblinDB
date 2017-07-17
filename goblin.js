@@ -72,10 +72,15 @@ ambushEmitter.on("change", function(){
 
 goblinDataEmitter.on("change", function(details){
     if(goblin.config.recordChanges){
-        fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
+        fs.writeFile(goblin.config.files.db, "", function(error) {
             if(error) {
-                throw configGoblin.logPrefix, 'Database saving error in file System:', error;
+                throw configGoblin.logPrefix, 'Database cleaning before saving error in file System:', error;
             }
+            fs.writeFile(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
+                if(error) {
+                    throw configGoblin.logPrefix, 'Database saving error in file System:', error;
+                }
+            });
         });
     }
 
