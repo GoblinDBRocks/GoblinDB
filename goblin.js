@@ -243,9 +243,11 @@ module.exports = function(config){
             if(point && typeof(point) === "string" && data && typeof(data) === "object"){
                 goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db[point], 'key': point});
                 goblin.db[point] = data;
-            } else if (!point && data && typeof(data) === "object"){
+            } else if (!point && data && typeof(data) === "object" && !(data instanceof Array)){
                 goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db});
                 goblin.db = data;
+            } else if (!point && data && (data instanceof Array)){
+                throw configGoblin.logPrefix, 'Database saving error: Setting all the db to an Array is forbiden. Database must be an object.';
             } else {
                 throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
             };
