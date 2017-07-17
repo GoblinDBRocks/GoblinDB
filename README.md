@@ -16,13 +16,19 @@
 
 - Coding is fun, so databases must be fun too.
 - Data is the king.
-- Data should be stored in the system as a file when a change happend.
+- Data should be stored in the system as a file whenever a change happens.
 - Data storage in the system must be hackable.
 - The database can lead or connect your server components.
 - Events are great... because we are asynchronous.
 - We prefer facts over promises: facts are there, promises maybe yes or not. In fact, we're talking about callbacks.
 - Data is not the only stuff that can be store in a database.
 - We prefer ambush functions over lambda functions. As you know... we're talking about anonymous functions.
+
+### IMPORTANT!
+
+GobliDB is not ready for production. It is an experimental database, most of the features are under development... You can use it now, but there is a lot of work pending. 
+
+**We will release a production ready version soon, please keep in touch**
 
 ### [Documentation](http://goblindb.osweekends.com/)
 
@@ -92,13 +98,13 @@ npm test
 
 - [ ] Support multidimensional navigation in the database (.ref() method).
 - [ ] Support to chain methods.
-- [ ] Puglin documentation exameple
+- [ ] Plugin documentation example
 - [ ] Add basic query methods as a plugin.
 - [ ] Add Avance query methods as a plugin.
 - [ ] Add support to .once() method for events.
 - [ ] Add support to UID in events.
 - [ ] Additional events to support (config changes, etc...).
-- [ ] Add additional support to Backup goblin with other databases like Firebase, Mongo... in real time as a plugin.
+- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
 - [ ] Full documentation in JSDoc.
 - [ ] Gulp Tasks Improvement.
 - [ ] Test support for Events using Sinon.
