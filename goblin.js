@@ -224,40 +224,61 @@ module.exports = function(config){
         },
         get: function (point) {
             if(point && typeof(point) === "string"){
-                return goblin.db[point];
+                var tree = point.split('.'),
+                    parent = goblin.db;
+
+                for (var i = 0; i < tree.length; i++) {
+                    if(i !== tree.length-1) {
+                        if(typeof parent[tree[i]] === 'undefined') {
+                            // If there is no child here, won't be deeper. Return undefined
+                            return undefined;
+                        }
+                        parent = parent[tree[i]];
+                    } else {
+                        return parent[tree[i]];
+                    }
+                }
             } else {
                 return goblin.db;
             }
         },
-        push: function (data){
-            var newKey = randomstring.generate();
+        push: function (data, point){
+            if(!point) {
+                point = '';
+            } else if(typeof(point) === 'string') {
+                point = point + '.';
+            } else {
+                throw configGoblin.logPrefix, 'Database saving error: Invalid reference point type provided to push. Only string allowed.'
+            }
+
+            var newKey = point + randomstring.generate();
 
             if(data && typeof(data) === "object"){
+                setDeep(data, newKey, true);
                 goblinDataEmitter.emit('change', {'type': 'push', 'value': data, 'key': newKey});
-                goblin.db[newKey] = data;
             } else {
                 throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
             }
         },
-        set: function(data, point){
-            if(point && typeof(point) === "string" && data && typeof(data) === "object"){
-                goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db[point], 'key': point});
-                goblin.db[point] = data;
-            } else if (!point && data && typeof(data) === "object" && !(data instanceof Array)){
-                goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db});
-                goblin.db = data;
-            } else if (!point && data && (data instanceof Array)){
-                throw configGoblin.logPrefix, 'Database saving error: Setting all the db to an Array is forbiden. Database must be an object.';
-            } else {
-                throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
-            };
-        },
+        set: setDeep,
         update: function(data, point){
-            if(point && typeof(point) === "string" && typeof(data) === "object"){
-                var oldValue = goblin.db[point];
-                goblin.db[point] = _.merge({}, goblin.db, data);
-                goblinDataEmitter.emit('change', {'type': 'update', 'value': goblin.db[point], 'oldValue': oldValue, 'key': point});
-            } else if (!point && typeof(data) === "object"){
+            if(point && typeof(point) === "string" && typeof(data) === "object") {
+                var tree = point.split('.'),
+                    parent = goblin.db;
+
+                for (var i = 0; i < tree.length; i++) {
+                    if(i !== tree.length-1) {
+                        if(typeof parent[tree[i]] === 'undefined') {
+                            parent[tree[i]] = {};
+                        }
+                        parent = parent[tree[i]];
+                    } else {
+                        var oldValue = parent[tree[i]];
+                        parent[tree[i]] = _.merge({}, goblin.db, data);
+                        goblinDataEmitter.emit('change', {'type': 'update', 'value': parent[tree[i]], 'oldValue': oldValue, 'key': point});
+                    }
+                }
+            } else if (!point && typeof(data) === "object") {
                 var oldValue = goblin.db;
                 goblin.db = _.merge({}, goblin.db, data);
                 goblinDataEmitter.emit('change', {'type': 'update', 'value': goblin.db, 'oldValue': oldValue});
@@ -267,4 +288,35 @@ module.exports = function(config){
         }
     }
 
+}
+
+
+function setDeep(data, point, silent){
+    if(point && typeof(point) === "string" && data && typeof(data) === "object") {
+        var tree = point.split('.'),
+            parent = goblin.db;
+
+        for (var i = 0; i < tree.length; i++) {
+            if(i !== tree.length-1) {
+                if(typeof parent[tree[i]] === 'undefined') {
+                    parent[tree[i]] = {};
+                }
+                parent = parent[tree[i]];
+            } else {
+                if(!silent) {
+                    goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db[point], 'key': point});
+                }
+                parent[tree[i]] = data;
+            }
+        }
+    } else if (!point && data && typeof(data) === "object" && !(data instanceof Array)) {
+        if(!silent) {
+            goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db});
+        }
+        goblin.db = data;
+    } else if (!point && data && (data instanceof Array)) {
+        throw configGoblin.logPrefix, 'Database saving error: Setting all the db to an Array is forbiden. Database must be an object.';
+    } else {
+        throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
+    }
 }
