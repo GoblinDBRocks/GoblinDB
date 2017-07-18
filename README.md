@@ -2,6 +2,7 @@
 ![shieldsIO](https://img.shields.io/github/release/UlisesGascon/GoblinDB.svg)
 ![shieldsIO](https://img.shields.io/github/license/UlisesGascon/GoblinDB.svg)
 ![shieldsIO](https://img.shields.io/david/UlisesGascon/GoblinDB.svg)
+![Travis](https://travis-ci.org/GoblinDBRocks/GoblinDB.svg?branch=master)
 
 # [GoblinDB](http://goblindb.osweekends.com/)
 
