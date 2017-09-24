@@ -502,7 +502,7 @@ describe("Database", function() {
         it("Deep method get(): Get a deep node", function() {
             expect(goblinDB.get('internal.references.in.goblin.are')).to.deep.equal('deep');
         });
-        it("Deep method push(): Creation", function() {
+        it("Deep method push(): Push two objects deep", function() {
             goblinDB.push({"deeper":"than expected"}, 'internal.references.in.goblin.push');
             goblinDB.push({"cooler":"than expected"}, 'internal.references.in.goblin.push');
             expect(Object.keys(goblinDB.get('internal.references.in.goblin.push')).length).to.be.equal(2);
