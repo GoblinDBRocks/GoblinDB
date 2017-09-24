@@ -309,7 +309,7 @@ function setDeep(data, point, silent){
                 parent[tree[i]] = data;
             }
         }
-    } else if (!point && data && typeof(data) === "object" && !(data instanceof Array)) {
+    } else if (!point && data && typeof(data) === "object" && !Array.isArray(data)) {
         if(!silent) {
             goblinDataEmitter.emit('change', {'type': 'set', 'value': data, 'oldValue': goblin.db});
         }
