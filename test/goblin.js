@@ -495,6 +495,18 @@ describe("Database", function() {
             goblinDB.push({"more":"data"})
             expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
         });
+        it("Deep method set(): Create a deep object", function() {
+            goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
+            expect(goblinDB.get("internal")).to.deep.equal({"references": {"in": {"goblin": {"are": "deep"}}}}); // internal.references.in.goblin.are.deep
+        });
+        it("Deep method get(): Get a deep node", function() {
+            expect(goblinDB.get('internal.references.in.goblin.are')).to.deep.equal('deep');
+        });
+        it("Deep method push(): Push two objects deep", function() {
+            goblinDB.push({"deeper":"than expected"}, 'internal.references.in.goblin.push');
+            goblinDB.push({"cooler":"than expected"}, 'internal.references.in.goblin.push');
+            expect(Object.keys(goblinDB.get('internal.references.in.goblin.push')).length).to.be.equal(2);
+        });
         it("Method getConfig(): Content", function() {
             expect(goblinDB.getConfig()).to.deep.equal({"fileName": "./test/testDB", "files": {"ambush": "./test/testDB.goblin", "db": "./test/testDB.json"}, logPrefix: '[GoblinDB]', recordChanges: true });
         });
