@@ -169,28 +169,17 @@ function run(id, parameter, callback){
 }
 
 function ambushChanged() {
-
-	console.log('##############################');
-	console.log('##############################');
-	console.log('YEEEEEEHA!!! Ambush changed!!!');
-	console.log('##############################');
-	console.log('##############################');
-	console.log(goblin.ambush);
-	console.log('##############################');
-
 	// Save a clean version of the functions, to avoid failures
     Storage.save(goblin.config.files.ambush, '', function(error) {
         if(error) {
             logger([goblin.config.logPrefix, 'Database cleaning before saving error in file System:', error]);
         }
-        console.log('Db clean!!');
 
         // And now, save the real ambush functions
         Storage.save(goblin.config.files.ambush, JSONfn.stringify(goblin.ambush), function(error) {
             if(error) {
                 logger([goblin.config.logPrefix, 'Database saving error in file System:', error]);
             }
-        	console.log('Db updated!!');
         });
     });
     
