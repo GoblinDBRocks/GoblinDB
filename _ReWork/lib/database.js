@@ -3,6 +3,7 @@ const randomstring = require('randomstring');
 
 const goblin = require('./goblin');
 const Storage = require('./storage').database;
+const logger = require('./errors');
 
 const Database = {
 	init: init,
@@ -23,7 +24,7 @@ goblin.goblinDataEmitter.on('change', goblinChanged);
 function init() {
 	goblin.db = Storage.read(goblin.config.files.db);
 
-	if(_.isEmpty(goblin.db)) {
+	if(!goblin.db) {
 		Storage.save(goblin.config.files.db, goblin.db);
 	}
 
@@ -31,7 +32,7 @@ function init() {
 }
 
 function get(point) {
-	if(point && typeof(point) === 'string'){
+	if(point && typeof(point) === 'string') {
 		var tree = point.split('.'),
 			parent = goblin.db;
 
@@ -51,26 +52,26 @@ function get(point) {
 	}
 }
 
-function push(data, point){
+function push(data, point) {
 	if(!point) {
 		point = '';
 	} else if(typeof(point) === 'string') {
 		point = point + '.';
 	} else {
-		throw goblin.config.logPrefix, 'Database saving error: Invalid reference point type provided to push. Only string allowed.';
+		logger([goblin.config.logPrefix, 'Database saving error: Invalid reference point type provided to push. Only string allowed.']);
 	}
 
 	var newKey = point + randomstring.generate();
 
-	if(data && typeof(data) === 'object'){
+	if(data && typeof(data) === 'object') {
 		set(data, newKey, true);
 		goblin.goblinDataEmitter.emit('change', {'type': 'push', 'value': data, 'key': newKey});
 	} else {
-		throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
+		logger([goblin.config.logPrefix, 'Database saving error: no data provided or data is not an object/Array.']);
 	}
 }
 
-function set(data, point, silent){
+function set(data, point, silent) {
 	if(point && typeof(point) === 'string' && data && typeof(data) === 'object') {
 		var tree = point.split('.'),
 			parent = goblin.db;
@@ -94,13 +95,13 @@ function set(data, point, silent){
 		}
 		goblin.db = data;
 	} else if (!point && data && (data instanceof Array)) {
-		throw configGoblin.logPrefix, 'Database saving error: Setting all the db to an Array is forbiden. Database must be an object.';
+		logger([goblin.config.logPrefix, 'Database saving error: Setting all the db to an Array is forbiden. Database must be an object.']);
 	} else {
-		throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
+		logger([goblin.config.logPrefix, 'Database saving error: no data provided or data is not an object/Array.']);
 	}
 }
 
-function update(data, point){
+function update(data, point) {
 	if(point && typeof(point) === 'string' && typeof(data) === 'object') {
 		var tree = point.split('.'),
 			parent = goblin.db;
@@ -122,30 +123,30 @@ function update(data, point){
 		goblin.db = _.merge({}, goblin.db, data);
 		goblin.goblinDataEmitter.emit('change', {'type': 'update', 'value': goblin.db, 'oldValue': oldValue});
 	} else {
-		throw configGoblin.logPrefix, 'Database saving error: no data provided or data is not an object/Array.';
+		logger([goblin.config.logPrefix, 'Database saving error: no data provided or data is not an object/Array.']);
 	}
 }
 
-function goblinChanged(details){
-	if(goblin.config.recordChanges){
+function goblinChanged(details) {
+	if(goblin.config.recordChanges) {
 		// Save a clean version of the db, to avoid failures
 		Storage.save(goblin.config.files.db, '', function(error) {
 			if(error) {
-				throw configGoblin.logPrefix, 'Database cleaning before saving error in file System:', error;
+				logger([goblin.config.logPrefix, 'Database cleaning before saving error in file System:', error]);
 			}
 			
 			// And now, save the real db version
 			Storage.save(goblin.config.files.db, JSON.stringify(goblin.db), function(error) {
 				if(error) {
-					throw configGoblin.logPrefix, 'Database saving error in file System:', error;
+					logger([goblin.config.logPrefix, 'Database saving error in file System:', error]);
 				}
 			});
 		});
 	}
 
 	// Hooks management
-	goblin.hooks.repositoy.forEach(function(hook){
-		if(hook.event ===  details.type || hook.event === 'change'){
+	goblin.hooks.repositoy.forEach(function(hook) {
+		if(hook.event ===  details.type || hook.event === 'change') {
 			hook.callback({'value': details.value, 'oldValue': details.oldValue});
 		}
 	});

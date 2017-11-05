@@ -8,7 +8,7 @@ const fileSystem = {
 // ToDo: Make all funcs parameterly sync and async (def: sync)
 
 function read(file, callback) {
-	var db = {};
+	var db = null;
 
 	if (fs.existsSync(file)) {
 		db = JSON.parse(fs.readFileSync(file));
