@@ -1,8 +1,8 @@
 const _ = require('lodash');
 // const JSONfn = require('json-fn');
 
-const goblin = require('./goblin');
-const Database = require('./database');
+const goblin = require('./lib/goblin');
+const Database = require('./lib/database');
 
 
 

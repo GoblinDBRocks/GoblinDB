@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const _ = require('lodash');
 
-const configGoblin = require('./config');
+const configGoblin = require('../config');
 
 const goblin = {
 	config: configGoblin,
