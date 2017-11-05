@@ -7,8 +7,8 @@ var chai = require("chai"),
 require('mocha-sinon');
 chai.use(require('chai-fs'));
 
-var testDB = {db: "./test/testDB.json", ambush: "./test/testDB.goblin"}
-var GDB = require("../goblin");
+var testDB = {db: "./test/testDB.json", ambush: "./test/testDB.goblin"};
+var GDB = require("../index");
 var goblinDB = GDB({"fileName": "./test/testDB"});
 
 // Mute feature for console.log
@@ -18,8 +18,9 @@ var logger = function(){
     var pub = {};
 
     pub.enableLogger =  function enableLogger() {
-        if(oldConsoleLog == null)
+        if(oldConsoleLog === null) {
             return;
+        }
 
         console.log = oldConsoleLog;
     };
@@ -33,14 +34,23 @@ var logger = function(){
 }();
 
 function emptyAmbushFunctions(){
-    var currentFunctions = goblinDB.ambush.list()
-    currentFunctions.forEach(function(element){
-        goblinDB.ambush.remove(element)
-    })
+    var currentFunctions = goblinDB.ambush.list();
+    currentFunctions.forEach(function(element) {
+        goblinDB.ambush.remove(element);
+    });
 }
 
 function cleanGoblin (callback) {
-    goblinDB.set({})
+    goblinDB.set({});
+
+    callback();
+}
+
+function cleanAmbush (callback) {
+    var funcs = goblinDB.ambush.list();
+    for(let i = 0; i < funcs.length; i++) {
+        goblinDB.ambush.remove(funcs[i]);
+    }
 
     callback();
 }
@@ -438,6 +448,9 @@ describe("Database", function() {
 
     describe("Enviroment:", function(){
         describe("JSON Database:", function(){
+            beforeEach(function(done) {
+                cleanAmbush(done);
+            });
             it("File creation for data", function() {
                 expect(testDB.db).to.be.a.file()
             });
@@ -450,7 +463,7 @@ describe("Database", function() {
         describe("JSON Database:", function(){
             it("Content for data", function(done) {
                 waitDbContent(10, function(){
-                    expect(testDB.db).with.content("{}");
+                    expect(testDB.db).with.content('"{}"');
                     done();
                 })
             });
@@ -458,7 +471,7 @@ describe("Database", function() {
             it("Content for Ambush (Lmabda)", function(done) {
                 emptyAmbushFunctions();
                 waitDbContent(10, function(){
-                    expect(testDB.ambush).with.content("[]");
+                    expect(testDB.ambush).with.content('"[]"');
                     done();
                 })
             });
