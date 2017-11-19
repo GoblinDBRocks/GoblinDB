@@ -1,4 +1,4 @@
-var chai = require("chai"),
+var chai = require('chai'),
     expect = chai.expect,
     gutil = require('gulp-util'),
     fs = require('fs');
@@ -10,6 +10,8 @@ chai.use(require('chai-fs'));
 var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
 var GDB = require('../index');
 var goblinDB = GDB({'fileName': './test/testDB'});
+
+var errors = '../lib/logger/errors.js';
 
 // Mute feature for console.log
 // @see: http://stackoverflow.com/a/1215400
@@ -70,7 +72,7 @@ function cleanUp (file){
         }
     });
 }
-
+/**/
 describe('Ambush (Lambda) test', function() {
     var control;
     var simpleFunction = {
@@ -129,49 +131,49 @@ describe('Ambush (Lambda) test', function() {
                 expect(currentList).to.be.deep.equal(actualList);
             });
             it('No Arguments provided', function() {
-                expect(function () { goblinDB.ambush.add(); }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
+                expect(function () { goblinDB.ambush.add(); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
             it('Wrong Arguments provided: Array', function() {
-                expect(function () { goblinDB.ambush.add([]); }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
+                expect(function () { goblinDB.ambush.add([]); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
             it('Wrong Arguments provided: No ID', function() {
                 expect(function () { goblinDB.ambush.add({
                     category: [],
                     action: function(){},
-                }); }).to.throw('Ambush saving error: no ID provided or ID is not a string.');
+                }); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
             it('Wrong Arguments provided: No right ID type of data', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 1,
                     category: [],
                     action: function(){},
-                }); }).to.throw('Ambush saving error: no ID provided or ID is not a string.');
+                }); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
             it('Wrong Arguments provided: No CATEGORY', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     action: function(){},
-                }); }).to.throw('Ambush saving error: no CATEGORY provided or CATEGORY is not an Array.');
+                }); }).to.throw(errors.AMBUSH_INVALID_CATEGORY);
             });
             it('Wrong Arguments provided: No right CATEGORY type of data', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     category: '',
                     action: function(){},
-                }); }).to.throw('Ambush saving error: no CATEGORY provided or CATEGORY is not an Array.');
+                }); }).to.throw(errors.AMBUSH_INVALID_CATEGORY);
             });
             it('Wrong Arguments provided: No ACTION', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     category: [],
-                }); }).to.throw('Ambush saving error: no ACTION provided or ACTION is not a function.');
+                }); }).to.throw(errors.AMBUSH_INVALID_ACTION);
             });
             it('Wrong Arguments provided: No right ACTION type of data', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     category: [],
                     action: [],
-                }); }).to.throw('Ambush saving error: no ACTION provided or ACTION is not a function.');
+                }); }).to.throw(errors.AMBUSH_INVALID_ACTION);
             });
         });
 
@@ -194,10 +196,10 @@ describe('Ambush (Lambda) test', function() {
 
         describe('remove(): Error Management', function() {
             it('Wrong Arguments provided: No ID', function() {
-                expect(function () { goblinDB.ambush.remove(); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.remove(); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
             it('Wrong Arguments provided: No right ID type of data', function() {
-                expect(function () { goblinDB.ambush.remove({id: 1}); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.remove({id: 1}); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
         });
 
@@ -223,6 +225,7 @@ describe('Ambush (Lambda) test', function() {
 
                 goblinDB.ambush.add(origin);
                 goblinDB.ambush.update('testing-origin', after);
+
                 expect(goblinDB.ambush.details('testing-after')).to.be.deep.equal(after);
                 goblinDB.ambush.remove('testing-after');
 
@@ -244,7 +247,6 @@ describe('Ambush (Lambda) test', function() {
                 goblinDB.ambush.remove('testing-after');
             });
             it('Overwrite the -ACTION- only:', function(){
-                console.log('ACTION!! ');
                 var origin = {
                     id: 'testing-origin',
                     category: ['test'],
@@ -300,27 +302,34 @@ describe('Ambush (Lambda) test', function() {
 
         describe('update(): Error Management', function() {
             it('Wrong ID conflict Management', function (){
+                expect(function () { goblinDB.ambush.update('invented-id', {category: ['intented-data']}); }).to.throw(errors.AMBUSH_UPDATE_INVALID_REFERENCE);
+            });
+            it('Wrong ID shall not add functions', function (){
                 var currentList = goblinDB.ambush.list();
+                var actualList;
                 logger.disableLogger();
-                goblinDB.ambush.update('invented-id', {category: ['intented-data']});
+                try {
+                    goblinDB.ambush.update('invented-id', {category: ['intented-data']});
+                } catch(e) {
+                    actualList = goblinDB.ambush.list();
+                }
                 logger.enableLogger();
-                var actualList = goblinDB.ambush.list();
                 expect(currentList).to.be.deep.equal(actualList);
             });
             it('Wrong Arguments provided: No ID', function() {
-                expect(function () { goblinDB.ambush.update(); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.update(); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
 
             it('Wrong Arguments provided: No right ID type of data', function() {
-                expect(function () { goblinDB.ambush.update(1); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.update(1); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
 
             it('No Arguments provided', function() {
-                expect(function () { goblinDB.ambush.update('testing-callback-function'); }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
+                expect(function () { goblinDB.ambush.update('testing-callback-function'); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
 
             it('Wrong Arguments provided: Array', function() {
-                expect(function () { goblinDB.ambush.update('testing-callback-function',[]); }).to.throw('Ambush saving error: no data provided or data is not an object/Array.');
+                expect(function () { goblinDB.ambush.update('testing-callback-function',[]); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
 
             it('Wrong Arguments provided: No right ID type of data', function() {
@@ -328,7 +337,7 @@ describe('Ambush (Lambda) test', function() {
                     id: 1,
                     category: [],
                     action: function(){},
-                });}).to.throw('Ambush saving error: no ID provided or ID is not a string.');
+                });}).to.throw(errors.AMBUSH_INVALID_ID);
             });
 
             it('Wrong Arguments provided: No right CATEGORY type of data', function() {
@@ -336,7 +345,7 @@ describe('Ambush (Lambda) test', function() {
                     id: 'test',
                     category: 1,
                     action: function(){},
-                });}).to.throw('Ambush saving error: no CATEGORY provided or CATEGORY is not an Array.');
+                });}).to.throw(errors.AMBUSH_INVALID_CATEGORY);
             });
 
             it('Wrong Arguments provided: No right ACTION type of data', function() {
@@ -344,7 +353,7 @@ describe('Ambush (Lambda) test', function() {
                     id: 'test',
                     category: [],
                     action: [],
-                });}).to.throw('Ambush saving error: no ACTION provided or ACTION is not a function.');
+                });}).to.throw(errors.AMBUSH_INVALID_ACTION);
             });
         });
 
@@ -380,11 +389,11 @@ describe('Ambush (Lambda) test', function() {
 
         describe('details(): Error Management', function() {
             it('Wrong Arguments provided: No ID', function() {
-                expect(function () { goblinDB.ambush.details(); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.details(); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
 
             it('Wrong Arguments provided: No right ID type of data', function() {
-                expect(function () { goblinDB.ambush.details(1); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.details(1); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
         });
 
@@ -415,6 +424,10 @@ describe('Ambush (Lambda) test', function() {
 
         describe('run(): Error Management', function() {
             it('Wrong ID conflict Management', function() {
+                expect(function () { goblinDB.ambush.run('invented-id-function', false, console.log); }).to.throw(errors.AMBUSH_INVALID_REFERENCE);
+            });
+
+            it('Shall not run a removed function', function() {
                 control = false;
                 goblinDB.ambush.add(argumentFunction);
                 goblinDB.ambush.run('testing-callback-function', true, function(arg){
@@ -422,29 +435,31 @@ describe('Ambush (Lambda) test', function() {
                 });
                 expect(control).to.be.equal(true);
                 goblinDB.ambush.remove('testing-callback-function');
-                goblinDB.ambush.run('testing-callback-function', false, function(arg){
-                    control = arg;
-                });
+                expect(function () {
+                    goblinDB.ambush.run('testing-callback-function', false, function(arg){
+                        control = arg;
+                    });
+                }).to.throw(errors.AMBUSH_INVALID_REFERENCE);
                 expect(control).to.be.equal(true);
             });
 
             it('Wrong Arguments provided: No ID', function() {
-                expect(function () { goblinDB.ambush.run(); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.run(); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
 
             it('Wrong Arguments provided: No right ID type of data', function() {
-                expect(function () { goblinDB.ambush.run(1); }).to.throw('Ambush error: no ID provided or ID is not a string.');
+                expect(function () { goblinDB.ambush.run(1); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
 
             it('Wrong Arguments provided: No right CALLBACK type of data', function() {
-                expect(function () { goblinDB.ambush.run('test', 'test-argument', 'callback'); }).to.throw('Ambush saving error: no CALLBACK provided or CALLBACK is not a function.');
+                expect(function () { goblinDB.ambush.run('test', 'test-argument', 'callback'); }).to.throw(errors.AMBUSH_NO_CALLBACK);
             });
         });
     });
 });
+/**/
 
-
-describe("Database", function() {
+describe('Database', function() {
     beforeEach(function(done) {
         cleanGoblin(done);
     });
@@ -452,26 +467,26 @@ describe("Database", function() {
         cleanAmbush(done);
     });
 
-    describe("Enviroment:", function(){
-        describe("JSON Database:", function(){
-            it("File creation for data", function() {
+    describe('Enviroment:', function(){
+        describe('JSON Database:', function(){
+            it('File creation for data', function() {
                 expect(testDB.db).to.be.a.file()
             });
 
-            it("File creation for Ambush (Lmabda)", function() {
+            it('File creation for Ambush (Lmabda)', function() {
                 expect(testDB.ambush).to.be.a.file()
             });
         })
 
-        describe("JSON Database:", function(){
-            it("Content for data", function(done) {
+        describe('JSON Database:', function(){
+            it('Content for data', function(done) {
                 waitDbContent(10, function(){
                     expect(testDB.db).with.content('"{}"');
                     done();
                 })
             });
 
-            it("Content for Ambush (Lmabda)", function(done) {
+            it('Content for Ambush (Lmabda)', function(done) {
                 emptyAmbushFunctions();
                 waitDbContent(10, function(){
                     expect(testDB.ambush).with.content('"[]"');
@@ -481,60 +496,60 @@ describe("Database", function() {
         })
     })
 
-    describe("Events:", function(){
+    describe('Events:', function(){
         // In next release
     })
 
-    describe("Methods:", function(){
-        var demoContent = {"data-test": "testing content", "more-data-test": [123, true, "hello"]};
+    describe('Methods:', function(){
+        var demoContent = {'data-test': 'testing content', 'more-data-test': [123, true, 'hello']};
         beforeEach(function(){
             goblinDB.set(demoContent)
         });
 
-        it("Method get(): All Data", function() {
+        it('Method get(): All Data', function() {
             expect(goblinDB.get()).to.deep.equal(demoContent);
         });
 
-        it("Method get(): Key Data", function() {
-            expect(goblinDB.get("data-test")).to.deep.equal(demoContent["data-test"]);
+        it('Method get(): Key Data', function() {
+            expect(goblinDB.get('data-test')).to.deep.equal(demoContent['data-test']);
         });
 
-        it("Method set(): Replace All", function() {
-            goblinDB.set({"hello": "there", "more-data": "yeah!"});
-            expect(goblinDB.get()).to.deep.equal({"hello": "there", "more-data": "yeah!"});
+        it('Method set(): Replace All', function() {
+            goblinDB.set({'hello': 'there', 'more-data': 'yeah!'});
+            expect(goblinDB.get()).to.deep.equal({'hello': 'there', 'more-data': 'yeah!'});
         });
-        it("Method set(): Replace Key Content", function() {
-            goblinDB.set({"more": "details"}, "more-data");
-            expect(goblinDB.get("more-data")).to.deep.equal({"more": "details"});
+        it('Method set(): Replace Key Content', function() {
+            goblinDB.set({'more': 'details'}, 'more-data');
+            expect(goblinDB.get('more-data')).to.deep.equal({'more': 'details'});
         });
-        it("Method push(): Creation", function() {
-            goblinDB.push({"more":"data"})
+        it('Method push(): Creation', function() {
+            goblinDB.push({'more':'data'})
             expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
         });
-        it("Deep method set(): Create a deep object", function() {
+        it('Deep method set(): Create a deep object', function() {
             goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
-            expect(goblinDB.get("internal")).to.deep.equal({"references": {"in": {"goblin": {"are": "deep"}}}}); // internal.references.in.goblin.are.deep
+            expect(goblinDB.get('internal')).to.deep.equal({'references': {'in': {'goblin': {'are': 'deep'}}}}); // internal.references.in.goblin.are.deep
         });
-        it("Deep method get(): Get a deep node", function() {
+        it('Deep method get(): Get a deep node', function() {
             expect(goblinDB.get('internal.references.in.goblin.are')).to.deep.equal('deep');
         });
-        it("Deep method push(): Push two objects deep", function() {
-            goblinDB.push({"deeper":"than expected"}, 'internal.references.in.goblin.push');
-            goblinDB.push({"cooler":"than expected"}, 'internal.references.in.goblin.push');
+        it('Deep method push(): Push two objects deep', function() {
+            goblinDB.push({'deeper':'than expected'}, 'internal.references.in.goblin.push');
+            goblinDB.push({'cooler':'than expected'}, 'internal.references.in.goblin.push');
             expect(Object.keys(goblinDB.get('internal.references.in.goblin.push')).length).to.be.equal(2);
         });
-        it("Method getConfig(): Content", function() {
-            expect(goblinDB.getConfig()).to.deep.equal({"fileName": "./test/testDB", "files": {"ambush": "./test/testDB.goblin", "db": "./test/testDB.json"}, logPrefix: '[GoblinDB]', recordChanges: true });
+        it('Method getConfig(): Content', function() {
+            expect(goblinDB.getConfig()).to.deep.equal({'fileName': './test/testDB', 'files': {'ambush': './test/testDB.goblin', 'db': './test/testDB.json'}, logPrefix: '[GoblinDB]', recordChanges: true });
         });
-        it("Method updateConfig(): Changes", function() {
-            goblinDB.updateConfig({logPrefix: '[GoblinRocks!]', "extra": "extra-value"});
-            expect(goblinDB.getConfig()).to.deep.equal({"fileName": "./test/testDB", "files": {"ambush": "./test/testDB.goblin", "db": "./test/testDB.json"}, logPrefix: '[GoblinRocks!]', extra: "extra-value", recordChanges: true });
+        it('Method updateConfig(): Changes', function() {
+            goblinDB.updateConfig({logPrefix: '[GoblinRocks!]', 'extra': 'extra-value'});
+            expect(goblinDB.getConfig()).to.deep.equal({'fileName': './test/testDB', 'files': {'ambush': './test/testDB.goblin', 'db': './test/testDB.json'}, logPrefix: '[GoblinRocks!]', extra: 'extra-value', recordChanges: true });
         });
-        it("Method stopStorage(): Changes", function() {
+        it('Method stopStorage(): Changes', function() {
             goblinDB.stopStorage();
             expect(goblinDB.getConfig().recordChanges).to.be.equal(false);
         });
-        it("Method startStorage(): Changes", function() {
+        it('Method startStorage(): Changes', function() {
             goblinDB.stopStorage();
             goblinDB.startStorage();
             expect(goblinDB.getConfig().recordChanges).to.be.equal(true);
