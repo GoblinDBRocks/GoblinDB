@@ -1,11 +1,12 @@
 const _ = require('lodash');
 
 const goblin = require('./lib/goblin');
+const mode = require('./lib/logger/mode');
 const Ambush = require('./lib/ambush');
 const Database = require('./lib/database');
 
 
-function GoblinExports(config){
+function GoblinExports(config) {
 
 	// Set configuration
 	config = configValidation(config);
@@ -47,7 +48,7 @@ function GoblinExports(config){
 	};
 }
 
-function configValidation(configuration){
+function configValidation(configuration) {
 	configuration = typeof(configuration) === 'object' ?  configuration : {};
 	configuration.fileName = configuration.fileName ? configuration.fileName : './goblin_db';
 	configuration.files = {
@@ -55,6 +56,7 @@ function configValidation(configuration){
 		db: configuration.fileName + '.json'
 	};
 	configuration.recordChanges = configuration.recordChanges || true;
+	configuration.mode = mode[configuration.mode] ? configuration.mode : 'production';
 
 	return configuration;
 }

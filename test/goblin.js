@@ -9,17 +9,17 @@ chai.use(require('chai-fs'));
 
 var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
 var GDB = require('../index');
-var goblinDB = GDB({'fileName': './test/testDB'});
+var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'});
 
 var errors = '../lib/logger/errors.js';
 
 // Mute feature for console.log
 // @see: http://stackoverflow.com/a/1215400
-var logger = function(){
+var consoleLogger = function(){
     var oldConsoleLog = null;
     var pub = {};
 
-    pub.enableLogger =  function enableLogger() {
+    pub.enable =  function enableLogger() {
         if(oldConsoleLog === null) {
             return;
         }
@@ -27,7 +27,7 @@ var logger = function(){
         console.log = oldConsoleLog;
     };
 
-    pub.disableLogger = function disableLogger(){
+    pub.disable = function disableLogger(){
         oldConsoleLog = console.log;
         console.log = function() {};
     };
@@ -124,9 +124,9 @@ describe('Ambush (Lambda) test', function() {
         describe('add(): Error Management', function() {
             it('Same ID conflict Management', function (){
                 var currentList = goblinDB.ambush.list();
-                logger.disableLogger();
+                consoleLogger.disable();
                 goblinDB.ambush.add(simpleFunction);
-                logger.enableLogger();
+                consoleLogger.enable();
                 var actualList = goblinDB.ambush.list();
                 expect(currentList).to.be.deep.equal(actualList);
             });
@@ -241,7 +241,7 @@ describe('Ambush (Lambda) test', function() {
                 };
 
                 goblinDB.ambush.add(origin);
-                goblinDB.ambush.update('testing-origin', {id: 'testing-after'});                
+                goblinDB.ambush.update('testing-origin', {id: 'testing-after'});
                 origin.id = 'testing-after';
                 expect(goblinDB.ambush.details('testing-after')).to.be.deep.equal(origin);
                 goblinDB.ambush.remove('testing-after');
@@ -307,13 +307,13 @@ describe('Ambush (Lambda) test', function() {
             it('Wrong ID shall not add functions', function (){
                 var currentList = goblinDB.ambush.list();
                 var actualList;
-                logger.disableLogger();
+                consoleLogger.disable();
                 try {
                     goblinDB.ambush.update('invented-id', {category: ['intented-data']});
                 } catch(e) {
                     actualList = goblinDB.ambush.list();
                 }
-                logger.enableLogger();
+                consoleLogger.enable();
                 expect(currentList).to.be.deep.equal(actualList);
             });
             it('Wrong Arguments provided: No ID', function() {
@@ -539,11 +539,30 @@ describe('Database', function() {
             expect(Object.keys(goblinDB.get('internal.references.in.goblin.push')).length).to.be.equal(2);
         });
         it('Method getConfig(): Content', function() {
-            expect(goblinDB.getConfig()).to.deep.equal({'fileName': './test/testDB', 'files': {'ambush': './test/testDB.goblin', 'db': './test/testDB.json'}, logPrefix: '[GoblinDB]', recordChanges: true });
+            expect(goblinDB.getConfig()).to.deep.equal({
+                fileName: './test/testDB',
+                files: {
+                    ambush: './test/testDB.goblin',
+                    db: './test/testDB.json'
+                },
+                logPrefix: '[GoblinDB]',
+                recordChanges: true,
+                mode: 'strict'
+            });
         });
         it('Method updateConfig(): Changes', function() {
             goblinDB.updateConfig({logPrefix: '[GoblinRocks!]', 'extra': 'extra-value'});
-            expect(goblinDB.getConfig()).to.deep.equal({'fileName': './test/testDB', 'files': {'ambush': './test/testDB.goblin', 'db': './test/testDB.json'}, logPrefix: '[GoblinRocks!]', extra: 'extra-value', recordChanges: true });
+            expect(goblinDB.getConfig()).to.deep.equal({
+                fileName: './test/testDB',
+                files: {
+                    ambush: './test/testDB.goblin',
+                    db: './test/testDB.json'
+                },
+                logPrefix: '[GoblinRocks!]',
+                recordChanges: true,
+                extra: 'extra-value',
+                mode: 'strict'
+            });
         });
         it('Method stopStorage(): Changes', function() {
             goblinDB.stopStorage();
