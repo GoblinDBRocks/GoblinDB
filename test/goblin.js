@@ -11,7 +11,7 @@ var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
 var GDB = require('../index');
 var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'});
 
-var errors = '../lib/logger/errors.js';
+var errors = require('../lib/logger/errors.js');
 
 // Mute feature for console.log
 // @see: http://stackoverflow.com/a/1215400
@@ -225,13 +225,12 @@ describe('Ambush (Lambda) test', function() {
 
                 goblinDB.ambush.add(origin);
                 goblinDB.ambush.update('testing-origin', after);
-
                 expect(goblinDB.ambush.details('testing-after')).to.be.deep.equal(after);
                 goblinDB.ambush.remove('testing-after');
 
             });
             it('Overwrite the -ID- only:', function(){
-                var origin = {
+                const origin = {
                     id: 'testing-origin',
                     category: ['test'],
                     description: 'This is a simple function',
@@ -247,7 +246,7 @@ describe('Ambush (Lambda) test', function() {
                 goblinDB.ambush.remove('testing-after');
             });
             it('Overwrite the -ACTION- only:', function(){
-                var origin = {
+                const origin = {
                     id: 'testing-origin',
                     category: ['test'],
                     description: 'This is a simple function',
@@ -255,9 +254,10 @@ describe('Ambush (Lambda) test', function() {
                         control = true;
                     }
                 };
-                var changeFactor = function(){
+                const changeFactor = function(){
                     return 'Now... is different!';
                 };
+
                 goblinDB.ambush.add(origin);
                 goblinDB.ambush.update('testing-origin', {action: changeFactor});
                 origin.action = changeFactor;
@@ -266,7 +266,7 @@ describe('Ambush (Lambda) test', function() {
             });
 
             it('Overwrite the -CATEGORY- only:', function(){
-                var origin = {
+                const origin = {
                     id: 'testing-origin',
                     category: ['test'],
                     description: 'This is a simple function',
@@ -274,7 +274,8 @@ describe('Ambush (Lambda) test', function() {
                         control = true;
                     }
                 };
-                var changeFactor = ['Hello-test'];
+                const changeFactor = ['Hello-test'];
+
                 goblinDB.ambush.add(origin);
                 goblinDB.ambush.update('testing-origin', {category: changeFactor});
                 origin.category = changeFactor;
@@ -283,7 +284,7 @@ describe('Ambush (Lambda) test', function() {
             });
 
             it('Overwrite the -DESCRIPTION- only:', function(){
-                var origin = {
+                const origin = {
                     id: 'testing-origin',
                     category: ['test'],
                     description: 'This is a simple function',
@@ -291,7 +292,8 @@ describe('Ambush (Lambda) test', function() {
                         control = true;
                     }
                 };
-                var changeFactor = 'Hello-test';
+                const changeFactor = 'Hello-test';
+
                 goblinDB.ambush.add(origin);
                 goblinDB.ambush.update('testing-origin', {description: changeFactor});
                 origin.description = changeFactor;
@@ -301,12 +303,26 @@ describe('Ambush (Lambda) test', function() {
         });
 
         describe('update(): Error Management', function() {
-            it('Wrong ID conflict Management', function (){
-                expect(function () { goblinDB.ambush.update('invented-id', {category: ['intented-data']}); }).to.throw(errors.AMBUSH_UPDATE_INVALID_REFERENCE);
+            before(function() {
+                // Add testing-callback-function ambush for testing purpose
+                goblinDB.ambush.add(fullFunction);
             });
+            after(function() {
+                goblinDB.ambush.remove('testing-callback-function');
+            });
+
+            it('Wrong ID conflict Management', function (){
+                expect(function () {
+                    goblinDB.ambush.update('invented-id', {
+                        category: ['intented-data']
+                    });
+                }).to.throw(errors.AMBUSH_UPDATE_INVALID_REFERENCE);
+            });
+
             it('Wrong ID shall not add functions', function (){
-                var currentList = goblinDB.ambush.list();
-                var actualList;
+                const currentList = goblinDB.ambush.list();
+                let actualList;
+
                 consoleLogger.disable();
                 try {
                     goblinDB.ambush.update('invented-id', {category: ['intented-data']});
@@ -314,8 +330,10 @@ describe('Ambush (Lambda) test', function() {
                     actualList = goblinDB.ambush.list();
                 }
                 consoleLogger.enable();
+
                 expect(currentList).to.be.deep.equal(actualList);
             });
+
             it('Wrong Arguments provided: No ID', function() {
                 expect(function () { goblinDB.ambush.update(); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
@@ -325,11 +343,15 @@ describe('Ambush (Lambda) test', function() {
             });
 
             it('No Arguments provided', function() {
-                expect(function () { goblinDB.ambush.update('testing-callback-function'); }).to.throw(errors.AMBUSH_INVALID_DATA);
+                expect(function() {
+                    goblinDB.ambush.update('testing-callback-function');
+                }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
 
             it('Wrong Arguments provided: Array', function() {
-                expect(function () { goblinDB.ambush.update('testing-callback-function',[]); }).to.throw(errors.AMBUSH_INVALID_DATA);
+                expect(function() {
+                    goblinDB.ambush.update('testing-callback-function', []);
+                }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
 
             it('Wrong Arguments provided: No right ID type of data', function() {
