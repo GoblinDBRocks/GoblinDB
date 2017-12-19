@@ -10,7 +10,6 @@ chai.use(require('chai-fs'));
 var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
 var GDB = require('../index');
 var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'});
-
 var errors = require('../lib/logger/errors.js');
 
 // Mute feature for console.log
@@ -122,14 +121,6 @@ describe('Ambush (Lambda) test', function() {
         });
 
         describe('add(): Error Management', function() {
-            it('Same ID conflict Management', function (){
-                var currentList = goblinDB.ambush.list();
-                consoleLogger.disable();
-                goblinDB.ambush.add(simpleFunction);
-                consoleLogger.enable();
-                var actualList = goblinDB.ambush.list();
-                expect(currentList).to.be.deep.equal(actualList);
-            });
             it('No Arguments provided', function() {
                 expect(function () { goblinDB.ambush.add(); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
@@ -304,8 +295,9 @@ describe('Ambush (Lambda) test', function() {
 
         describe('update(): Error Management', function() {
             before(function() {
-                // Add testing-callback-function ambush for testing purpose
+                // Add testing-callback-function and testing-simple-function ambush for testing purpose
                 goblinDB.ambush.add(fullFunction);
+                goblinDB.ambush.add(simpleFunction);
             });
             after(function() {
                 goblinDB.ambush.remove('testing-callback-function');
@@ -377,12 +369,22 @@ describe('Ambush (Lambda) test', function() {
                     action: [],
                 });}).to.throw(errors.AMBUSH_INVALID_ACTION);
             });
+
+            it('Wrong ID: The id already exist in the database', function() {
+                expect(function () { goblinDB.ambush.add({
+                    id: 'testing-simple-function',
+                    category: ['test-category'],
+                    action: function() {},
+                });}).to.throw(errors.AMBUSH_PROVIDED_ID_ALREADY_EXIST);
+            });
         });
 
         describe('list(): As Expected', function() {
-            it('Brings all the functions', function(){
-                goblinDB.ambush.add(simpleFunction);
-                goblinDB.ambush.add(fullFunction);
+            it('Brings all the functions', function() {
+                cleanAmbush(function() {
+                    goblinDB.ambush.add(simpleFunction);
+                    goblinDB.ambush.add(fullFunction);
+                });
                 expect(goblinDB.ambush.list().length).to.be.equal(2);
             });
             it('Brings all the functions filtered by category', function(){
@@ -401,11 +403,8 @@ describe('Ambush (Lambda) test', function() {
         });
 
         describe('details(): As Expected', function() {
-            it('Brings all the details of an existing function', function(){
+            it('Brings all the details of an existing function', function() {
                 expect(goblinDB.ambush.details('testing-simple-function')).to.be.deep.equal(simpleFunction);
-            });
-            it('Brings all the details of a non-existing function', function(){
-                expect(goblinDB.ambush.details('testing-invented')).to.be.equal(undefined);
             });
         });
 
@@ -417,12 +416,15 @@ describe('Ambush (Lambda) test', function() {
             it('Wrong Arguments provided: No right ID type of data', function() {
                 expect(function () { goblinDB.ambush.details(1); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
+
+            it('Wrong ID: The requested id does not exist', function() {
+                expect(function () { goblinDB.ambush.details('testing-invented') }).to.throw(errors.AMBUSH_NOT_STORED_ID);
+            });
         });
 
         describe('run(): As Expected', function() {
             it('Simple function. No Arguments and No Callback', function() {
                 control = false;
-                goblinDB.ambush.add(simpleFunction);
                 goblinDB.ambush.run('testing-simple-function');
                 expect(control).to.be.equal(true);
             });
@@ -436,7 +438,6 @@ describe('Ambush (Lambda) test', function() {
 
             it('Function with Arguments and Callback', function() {
                 control = false;
-                goblinDB.ambush.add(argumentFunction);
                 goblinDB.ambush.run('testing-callback-function', true, function(arg){
                     control = arg;
                 });
@@ -451,7 +452,6 @@ describe('Ambush (Lambda) test', function() {
 
             it('Shall not run a removed function', function() {
                 control = false;
-                goblinDB.ambush.add(argumentFunction);
                 goblinDB.ambush.run('testing-callback-function', true, function(arg){
                     control = arg;
                 });
