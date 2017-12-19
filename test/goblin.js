@@ -488,8 +488,11 @@ describe('Database', function() {
     beforeEach(function(done) {
         cleanAmbush(done);
     });
+    beforeEach(function() {
+        this.sinon.stub(console, 'error');
+    });
 
-    describe('Enviroment:', function(){
+    describe('Enviroment:', function() {
         describe('JSON Database:', function(){
             it('File creation for data', function() {
                 expect(testDB.db).to.be.a.file()
@@ -518,9 +521,9 @@ describe('Database', function() {
         })
     })
 
-    describe('Events:', function(){
+    describe('Events:', function() {
         // In next release
-    })
+    });
 
     describe('Methods:', function(){
         var demoContent = {'data-test': 'testing content', 'more-data-test': [123, true, 'hello']};
@@ -596,6 +599,27 @@ describe('Database', function() {
             expect(goblinDB.getConfig().recordChanges).to.be.equal(true);
         });
     })
+
+    describe('Mode:', function() {
+        it('Stric mode: Expect to thow an error', function() {
+            const strictGDB = GDB({'fileName': './test/testDB', mode: 'strict'});
+            expect(function () { strictGDB.ambush.update(); }).to.throw();
+        });
+
+        it('Development mode: Expect to get console error', function() {
+            const devGDB = GDB({'fileName': './test/testDB', mode: 'development'});
+            devGDB.ambush.update();
+            expect( console.error.calledOnce ).to.be.true;
+        });
+
+        it('Production mode: Expect nothing, neither to throw or call console error', function() {
+            const prodGDB = GDB({'fileName': './test/testDB', mode: 'production'});
+
+            expect( function() { prodGDB.ambush.update() }).to.not.throw();
+            expect( console.error.calledOnce ).to.be.false;
+        });
+    });
+
 
     after(function() {
         cleanUp(testDB.db);
