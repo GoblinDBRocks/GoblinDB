@@ -124,15 +124,18 @@ describe('Ambush (Lambda) test', function() {
             it('No Arguments provided', function() {
                 expect(function () { goblinDB.ambush.add(); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
+
             it('Wrong Arguments provided: Array', function() {
                 expect(function () { goblinDB.ambush.add([]); }).to.throw(errors.AMBUSH_INVALID_DATA);
             });
+
             it('Wrong Arguments provided: No ID', function() {
                 expect(function () { goblinDB.ambush.add({
                     category: [],
                     action: function(){},
                 }); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
+
             it('Wrong Arguments provided: No right ID type of data', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 1,
@@ -140,12 +143,14 @@ describe('Ambush (Lambda) test', function() {
                     action: function(){},
                 }); }).to.throw(errors.AMBUSH_INVALID_ID);
             });
+
             it('Wrong Arguments provided: No CATEGORY', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     action: function(){},
                 }); }).to.throw(errors.AMBUSH_INVALID_CATEGORY);
             });
+
             it('Wrong Arguments provided: No right CATEGORY type of data', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
@@ -153,18 +158,28 @@ describe('Ambush (Lambda) test', function() {
                     action: function(){},
                 }); }).to.throw(errors.AMBUSH_INVALID_CATEGORY);
             });
+
             it('Wrong Arguments provided: No ACTION', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     category: [],
                 }); }).to.throw(errors.AMBUSH_INVALID_ACTION);
             });
+
             it('Wrong Arguments provided: No right ACTION type of data', function() {
                 expect(function () { goblinDB.ambush.add({
                     id: 'test',
                     category: [],
                     action: [],
                 }); }).to.throw(errors.AMBUSH_INVALID_ACTION);
+            });
+
+            it('Wrong ID: The id already exist in the database', function() {
+                expect(function () { goblinDB.ambush.add({
+                    id: 'testing-simple-function',
+                    category: ['test-category'],
+                    action: function() {},
+                });}).to.throw(errors.AMBUSH_PROVIDED_ID_ALREADY_EXIST);
             });
         });
 
@@ -371,10 +386,8 @@ describe('Ambush (Lambda) test', function() {
             });
 
             it('Wrong ID: The id already exist in the database', function() {
-                expect(function () { goblinDB.ambush.add({
-                    id: 'testing-simple-function',
-                    category: ['test-category'],
-                    action: function() {},
+                expect(function () { goblinDB.ambush.update('testing-simple-function', {
+                    id: 'testing-callback-function'
                 });}).to.throw(errors.AMBUSH_PROVIDED_ID_ALREADY_EXIST);
             });
         });
