@@ -1,5 +1,5 @@
 {
-  "name": "goblindb",
+  "name": "@goblindb/goblindb",
   "version": "0.0.10",
   "description": "GoblinDB | Fear the Goblin! | An amazing, simple and fun database for humans",
   "main": "./index.js",
