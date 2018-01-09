@@ -26,7 +26,7 @@ var consoleLogger = function(){
         console.log = oldConsoleLog;
     };
 
-    pub.disable = function disableLogger(){
+    pub.disable = function disableLogger() {
         oldConsoleLog = console.log;
         console.log = function() {};
     };
@@ -34,7 +34,7 @@ var consoleLogger = function(){
     return pub;
 }();
 
-function emptyAmbushFunctions(){
+function emptyAmbushFunctions() {
     var currentFunctions = goblinDB.ambush.list();
     currentFunctions.forEach(function(element) {
         goblinDB.ambush.remove(element);
@@ -56,7 +56,7 @@ function cleanAmbush (callback) {
     callback();
 }
 
-function waitDbContent(time, callback){
+function waitDbContent(time, callback) {
     setTimeout(function(){
         callback();
     }, time);
@@ -72,13 +72,31 @@ function cleanUp (file){
     });
 }
 /**/
+describe('Database creation and restore:', function() {
+    it('Database - Created with an empty object', function() {
+        expect(testDB.db).with.content('"{}"');
+    });
+
+    it(' Ambush (Lambda) - Created with an empty array', function() {
+        expect(testDB.ambush).with.content('"[]"');
+    });
+
+    it('Database - Store an object in memory after read from file', function() {
+        expect(typeof(goblinDB.get())).to.deep.equal('object');
+    });
+
+    it(' Ambush (Lambda) - Store an array in memory after read from file', function() {
+        expect(Array.isArray(goblinDB.ambush.list())).to.equal(true);
+    });
+});
+
 describe('Ambush (Lambda) test', function() {
     var control;
     var simpleFunction = {
         id: 'testing-simple-function',
         category: ['test'],
         description: 'This is a simple function',
-        action: function(){
+        action: function() {
             control = true;
         }
     };
@@ -87,7 +105,7 @@ describe('Ambush (Lambda) test', function() {
         id: 'testing-argument-function',
         category: ['test', 'test-argument'],
         description: 'This is a function with arguments',
-        action: function(argument){
+        action: function(argument) {
             control = argument;
         }
     };
@@ -96,12 +114,12 @@ describe('Ambush (Lambda) test', function() {
         id: 'testing-callback-function',
         category: ['test', 'test-callback'],
         description: 'This is a function with arguments and callback',
-        action: function(argument, callback){
+        action: function(argument, callback) {
             callback(argument);
         }
     };
 
-    describe('Methods:', function(){
+    describe('Methods:', function() {
 
         describe('add(): As Expected', function() {
             it('Simple function. No Arguments and No Callback', function() {
@@ -506,7 +524,7 @@ describe('Database', function() {
     });
 
     describe('Enviroment:', function() {
-        describe('JSON Database:', function(){
+        describe('JSON Database:', function() {
             it('File creation for data', function() {
                 expect(testDB.db).to.be.a.file()
             });
@@ -516,9 +534,9 @@ describe('Database', function() {
             });
         })
 
-        describe('JSON Database:', function(){
+        describe('JSON Database:', function() {
             it('Content for data', function(done) {
-                waitDbContent(10, function(){
+                waitDbContent(10, function() {
                     expect(testDB.db).with.content('"{}"');
                     done();
                 })
@@ -526,21 +544,25 @@ describe('Database', function() {
 
             it('Content for Ambush (Lmabda)', function(done) {
                 emptyAmbushFunctions();
-                waitDbContent(10, function(){
+                waitDbContent(10, function() {
                     expect(testDB.ambush).with.content('"[]"');
                     done();
                 })
             });
-        })
-    })
+        });
+    });
 
     describe('Events:', function() {
         // In next release
     });
 
-    describe('Methods:', function(){
-        var demoContent = {'data-test': 'testing content', 'more-data-test': [123, true, 'hello']};
-        beforeEach(function(){
+    describe('Methods:', function() {
+        var demoContent = {
+            'data-test': 'testing content',
+            'more-data-test': [123, true, 'hello']
+        };
+        
+        beforeEach(function() {
             goblinDB.set(demoContent)
         });
 
@@ -632,8 +654,7 @@ describe('Database', function() {
             expect( console.error.calledOnce ).to.be.false;
         });
     });
-
-
+    
     after(function() {
         cleanUp(testDB.db);
         cleanUp(testDB.ambush);
