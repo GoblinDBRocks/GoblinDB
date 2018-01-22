@@ -73,16 +73,18 @@ function cleanUp (file){
 }
 /**/
 describe('Database creation and restore:', function() {
-    it('Database - Created with an empty object', function(done) {
+    it('Database - File created successfully', function(done) {
         fs.open(testDB.db, 'r', (err, fd) => {
-            console.log(err, fd);
-            expect(true).to.equal(true);
+            expect(err).to.equal(null);
             done();
         });
     });
 
-    it(' Ambush (Lambda) - Created with an empty array', function() {
-        expect(testDB.ambush).with.content('[]\n');
+    it(' Ambush (Lambda) - File created successfully', function() {
+        fs.open(testDB.ambush, 'r', (err, fd) => {
+            expect(err).to.equal(null);
+            done();
+        });
     });
 
     it('Database - Store an object in memory after read from file', function() {
