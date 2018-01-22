@@ -40,6 +40,7 @@
   "homepage": "https://github.com/UlisesGascon/GoblinDB#readme",
   "dependencies": {
     "json-fn": "1.1.1",
+    "jsonfile": "^4.0.0",
     "lodash": "4.17.4",
     "randomstring": "1.1.5"
   },
