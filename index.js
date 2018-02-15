@@ -5,18 +5,37 @@ const mode = require('./lib/logger/mode');
 const Ambush = require('./lib/ambush');
 const Database = require('./lib/database');
 
-
-function GoblinExports(config) {
+/**
+ * Initialize Goblin DB with the data (if any) stored in the files 
+ * 
+ * @param {object} config Optional. Overwrite initial configuration.
+ * 						  Ex. {@link @see './config.js'}
+ * @param {function} cb Optional callback called when the database has finished restoring
+ * 						data from files and it's ready to work. This callback takes only
+ * 						one parameter which is the error message (if any) that happen in
+ * 						the db initialization.
+ * @returns {object} Goblin instance.
+ */
+function GoblinExports(config, cb) {
+	if (!cb) {
+		cb = function() {};
+	}
 
 	// Set configuration
 	config = configValidation(config);
 	goblin.config = _.merge({}, goblin.config, config);
 
 	// Initialize current database
-	Database.init();
+	Database.init(function(dbError) {
+		if (dbError) {
+			return cb(dbError);
+		}
 
-	// Initialize current Ambush Database
-	Ambush.init();
+		// Initialize current Ambush Database
+		Ambush.init(function(ambError) {
+			cb(ambError);
+		});
+	});
 
 	return {
 		ambush: {
@@ -29,10 +48,10 @@ function GoblinExports(config) {
 		},
 		on: goblin.hooks.add,
 		off: goblin.hooks.remove,
-		getConfig: function(){
+		getConfig: function() {
 			return goblin.config;
 		},
-		updateConfig: function(newConfig){
+		updateConfig: function(newConfig) {
 			goblin.config = _.merge({}, goblin.config, newConfig);
 		},
 		stopStorage: function() {
@@ -60,6 +79,5 @@ function configValidation(configuration) {
 
 	return configuration;
 }
-
 
 module.exports = GoblinExports;

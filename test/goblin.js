@@ -9,7 +9,9 @@ chai.use(require('chai-fs'));
 
 var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
 var GDB = require('../index');
-var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'});
+var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'}, function(err) {
+    err && console.error('ERROR INITIALIZING DB', err);
+});
 var errors = require('../lib/logger/errors.js');
 
 // Mute feature for console.log
