@@ -1,4 +1,4 @@
-var chai = require('chai'),
+const chai = require('chai'),
     expect = chai.expect,
     gutil = require('gulp-util'),
     fs = require('fs');
@@ -6,13 +6,15 @@ var chai = require('chai'),
 // Plugins
 require('mocha-sinon');
 chai.use(require('chai-fs'));
-
-var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
-var GDB = require('../index');
-var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'}, function(err) {
+let dbReady = false;
+const testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
+const GDB = require('../index');
+const goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'}, function(err) {
     err && console.error('ERROR INITIALIZING DB', err);
+    dbReady = true;
 });
-var errors = require('../lib/logger/errors.js');
+
+const errors = require('../lib/logger/errors.js');
 
 // Mute feature for console.log
 // @see: http://stackoverflow.com/a/1215400
@@ -51,6 +53,7 @@ function cleanGoblin (callback) {
 
 function cleanAmbush (callback) {
     const funcs = goblinDB.ambush.list();
+
     for(let i = 0; i < funcs.length; i++) {
         goblinDB.ambush.remove(funcs[i]);
     }
@@ -73,27 +76,34 @@ function cleanUp (file){
         }
     });
 }
+
+function checkFileCreation(file, done) {
+    const interval = setInterval(() => {
+        if (dbReady) {
+            fs.open(file, 'r', (err, fd) => {
+                expect(err).to.equal(null);
+                done();
+            });
+            
+            clearInterval(interval);
+        }
+    }, 50);
+}
 /**/
 describe('Database creation and restore:', function() {
     it('Database - File created successfully', function(done) {
-        fs.open(testDB.db, 'r', (err, fd) => {
-            expect(err).to.equal(null);
-            done();
-        });
+        checkFileCreation(testDB.db, done);
     });
 
-    it(' Ambush (Lambda) - File created successfully', function() {
-        fs.open(testDB.ambush, 'r', (err, fd) => {
-            expect(err).to.equal(null);
-            done();
-        });
+    it('Ambush (Lambda) - File created successfully', function(done) {
+        checkFileCreation(testDB.ambush, done);
     });
 
     it('Database - Store an object in memory after read from file', function() {
         expect(typeof(goblinDB.get())).to.deep.equal('object');
     });
 
-    it(' Ambush (Lambda) - Store an array in memory after read from file', function() {
+    it('Ambush (Lambda) - Store an array in memory after read from file', function() {
         expect(Array.isArray(goblinDB.ambush.list())).to.equal(true);
     });
 });
