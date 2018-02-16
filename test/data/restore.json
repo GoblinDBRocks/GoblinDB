@@ -1,0 +1,31 @@
+{
+    "data-test":"testing content",
+    "more-data-test":[
+       123,
+       true,
+       "hello"
+    ],
+    "more-data":{
+       "more":"details"
+    },
+    "CSmLLJ99ltmY0WBOrEmBzWCPcLXJGxOb":{
+       "more":"data"
+    },
+    "internal":{
+       "references":{
+          "in":{
+             "goblin":{
+                "are":"deep",
+                "push":{
+                   "lmbcycaMtgfQwZAgiBm9I9tDdRafJmBt":{
+                      "deeper":"than expected"
+                   },
+                   "PXHTj0KCk6N3TUrpMOIENoqolwRpdQli":{
+                      "cooler":"than expected"
+                   }
+                }
+             }
+          }
+       }
+    }
+ }
