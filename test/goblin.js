@@ -6,9 +6,11 @@ const chai = require('chai'),
 // Plugins
 require('mocha-sinon');
 chai.use(require('chai-fs'));
-let dbReady = false;
+let dbReady = false, restoreReady = false;
 const testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
+const restoreDB = {db: './test/data/restore.json', ambush: './test/data/restore.goblin'};
 const GDB = require('../index');
+
 const goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'}, function(err) {
     err && console.error('ERROR INITIALIZING DB', err);
     dbReady = true;
@@ -87,8 +89,9 @@ function checkFileCreation(file, done) {
             
             clearInterval(interval);
         }
-    }, 50);
+    }, 30);
 }
+
 /**/
 describe('Database creation and restore:', function() {
     it('Database - File created successfully', function(done) {
@@ -676,5 +679,48 @@ describe('Database', function() {
     after(function() {
         cleanUp(testDB.db);
         cleanUp(testDB.ambush);
+    });
+});
+
+describe('Restore from file', function() {
+    const sumFnRestore = {
+        id: 'testing-sum-fn',
+        category: ['test-fn', 'test-sum'],
+        description: 'This is a function that gets an array of numbers and send the sum via callback',
+        action: function(numbers, callback) {
+            callback(numbers.reduce((accumulated, curr) => accumulated + curr, 0));
+        }
+    };
+
+    it('Database - Restored from file successfully', function(done) {
+        const restoreDB = GDB(
+            {
+                fileName: './test/data/restore',
+                mode: 'development'
+            },
+            function(err) {
+                err && console.error('ERROR INITIALIZING RESTORE DB', err);
+                
+                expect(restoreDB.get('internal.references.in.goblin.are')).to.equal('deep');
+                done();
+            }
+        );
+    });
+
+    it('Ambush (Lambda) - Restored from file successfully', function(done) {
+        const restoreDB = GDB(
+            {
+                fileName: './test/data/restore',
+                mode: 'development'
+            },
+            function(err) {
+                err && console.error('ERROR INITIALIZING RESTORE DB', err);
+                
+                restoreDB.ambush.run(sumFnRestore.id, [90, 8, 5], function(result) {
+                    expect(result).to.equal(103);
+                });
+                done();
+            }
+        );
     });
 });
