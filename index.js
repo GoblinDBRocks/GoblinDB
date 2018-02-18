@@ -63,7 +63,9 @@ function GoblinExports(config, cb) {
 		get: Database.get,
 		push: Database.push,
 		set: Database.set,
-		update: Database.update
+		update: Database.update,
+		delete: Database.delete,
+		truncate: Database.truncate
 	};
 }
 

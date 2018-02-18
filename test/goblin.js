@@ -574,13 +574,20 @@ describe('Database', function() {
     });
 
     describe('Events:', function() {
-        // In next release
+        // vs 1.0
     });
 
     describe('Methods:', function() {
         var demoContent = {
             'data-test': 'testing content',
-            'more-data-test': [123, true, 'hello']
+            'more-data-test': [123, true, 'hello'],
+            'to': {
+                'delete': {
+                    'nested': {
+                        'here': 'finish'
+                    }
+                }
+            }
         };
         
         beforeEach(function() {
@@ -605,7 +612,7 @@ describe('Database', function() {
         });
         it('Method push(): Creation', function() {
             goblinDB.push({'more':'data'})
-            expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
+            expect(Object.keys(goblinDB.get()).length).to.be.equal(5);
         });
         it('Deep method set(): Create a deep object', function() {
             goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
@@ -645,14 +652,41 @@ describe('Database', function() {
                 mode: 'strict'
             });
         });
+
         it('Method stopStorage(): Changes', function() {
             goblinDB.stopStorage();
             expect(goblinDB.getConfig().recordChanges).to.be.equal(false);
         });
+
         it('Method startStorage(): Changes', function() {
             goblinDB.stopStorage();
             goblinDB.startStorage();
             expect(goblinDB.getConfig().recordChanges).to.be.equal(true);
+        });
+
+        it('Deep method delete(): Delete a nested point', function() {
+            expect(goblinDB.delete('to.delete.nested.here')).to.be.equal(true);
+            expect(goblinDB.get('to.delete.nested')).to.deep.equal({});
+        });
+
+        it('Deep method delete(): Not delete when pointing to a invalid node', function() {
+            expect(function () {
+                deleted = goblinDB.delete('to.not.exist.nested.point');
+            }).to.throw();
+        });
+
+        it('Deep method delete(): Not point do nothing.', function() {
+            let deleted = false;
+
+            expect(function () {
+                deleted = goblinDB.delete();
+            }).to.throw();
+            expect(deleted).to.be.equal(false);
+        });
+
+        it('Deep method truncate(): Truncate all db.', function() {
+            goblinDB.truncate();
+            expect(goblinDB.get()).to.deep.equal({});
         });
     })
 
