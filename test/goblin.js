@@ -1,4 +1,4 @@
-var chai = require('chai'),
+const chai = require('chai'),
     expect = chai.expect,
     gutil = require('gulp-util'),
     fs = require('fs');
@@ -6,27 +6,33 @@ var chai = require('chai'),
 // Plugins
 require('mocha-sinon');
 chai.use(require('chai-fs'));
+let dbReady = false, restoreReady = false;
+const testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
+const restoreDB = {db: './test/data/restore.json', ambush: './test/data/restore.goblin'};
+const GDB = require('../index');
 
-var testDB = {db: './test/testDB.json', ambush: './test/testDB.goblin'};
-var GDB = require('../index');
-var goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'});
-var errors = require('../lib/logger/errors.js');
+const goblinDB = GDB({'fileName': './test/testDB', mode: 'strict'}, function(err) {
+    err && console.error('ERROR INITIALIZING DB', err);
+    dbReady = true;
+});
+
+const errors = require('../lib/logger/errors.js');
 
 // Mute feature for console.log
 // @see: http://stackoverflow.com/a/1215400
-var consoleLogger = function(){
-    var oldConsoleLog = null;
-    var pub = {};
+const consoleLogger = function(){
+    let oldConsoleLog = null;
+    const pub = {};
 
     pub.enable =  function enableLogger() {
-        if(oldConsoleLog === null) {
+        if (oldConsoleLog === null) {
             return;
         }
 
         console.log = oldConsoleLog;
     };
 
-    pub.disable = function disableLogger(){
+    pub.disable = function disableLogger() {
         oldConsoleLog = console.log;
         console.log = function() {};
     };
@@ -34,8 +40,8 @@ var consoleLogger = function(){
     return pub;
 }();
 
-function emptyAmbushFunctions(){
-    var currentFunctions = goblinDB.ambush.list();
+function emptyAmbushFunctions() {
+    const currentFunctions = goblinDB.ambush.list();
     currentFunctions.forEach(function(element) {
         goblinDB.ambush.remove(element);
     });
@@ -48,7 +54,8 @@ function cleanGoblin (callback) {
 }
 
 function cleanAmbush (callback) {
-    var funcs = goblinDB.ambush.list();
+    const funcs = goblinDB.ambush.list();
+
     for(let i = 0; i < funcs.length; i++) {
         goblinDB.ambush.remove(funcs[i]);
     }
@@ -56,7 +63,7 @@ function cleanAmbush (callback) {
     callback();
 }
 
-function waitDbContent(time, callback){
+function waitDbContent(time, callback) {
     setTimeout(function(){
         callback();
     }, time);
@@ -64,44 +71,76 @@ function waitDbContent(time, callback){
 
 function cleanUp (file){
     fs.exists(file, function(exists) {
-        if(exists) {
+        if (exists) {
             fs.unlinkSync(file);
         } else {
             gutil.colors.red(`${file} not found, so not deleting.`);
         }
     });
 }
+
+function checkFileCreation(file, done) {
+    const interval = setInterval(() => {
+        if (dbReady) {
+            fs.open(file, 'r', (err, fd) => {
+                expect(err).to.equal(null);
+                done();
+            });
+            
+            clearInterval(interval);
+        }
+    }, 30);
+}
+
 /**/
+describe('Database creation and restore:', function() {
+    it('Database - File created successfully', function(done) {
+        checkFileCreation(testDB.db, done);
+    });
+
+    it('Ambush (Lambda) - File created successfully', function(done) {
+        checkFileCreation(testDB.ambush, done);
+    });
+
+    it('Database - Store an object in memory after read from file', function() {
+        expect(typeof(goblinDB.get())).to.deep.equal('object');
+    });
+
+    it('Ambush (Lambda) - Store an array in memory after read from file', function() {
+        expect(Array.isArray(goblinDB.ambush.list())).to.equal(true);
+    });
+});
+
 describe('Ambush (Lambda) test', function() {
-    var control;
-    var simpleFunction = {
+    let control;
+    let simpleFunction = {
         id: 'testing-simple-function',
         category: ['test'],
         description: 'This is a simple function',
-        action: function(){
+        action: function() {
             control = true;
         }
     };
 
-    var argumentFunction = {
+    let argumentFunction = {
         id: 'testing-argument-function',
         category: ['test', 'test-argument'],
         description: 'This is a function with arguments',
-        action: function(argument){
+        action: function(argument) {
             control = argument;
         }
     };
 
-    var fullFunction = {
+    let fullFunction = {
         id: 'testing-callback-function',
         category: ['test', 'test-callback'],
         description: 'This is a function with arguments and callback',
-        action: function(argument, callback){
+        action: function(argument, callback) {
             callback(argument);
         }
     };
 
-    describe('Methods:', function(){
+    describe('Methods:', function() {
 
         describe('add(): As Expected', function() {
             it('Simple function. No Arguments and No Callback', function() {
@@ -506,7 +545,7 @@ describe('Database', function() {
     });
 
     describe('Enviroment:', function() {
-        describe('JSON Database:', function(){
+        describe('JSON Database:', function() {
             it('File creation for data', function() {
                 expect(testDB.db).to.be.a.file()
             });
@@ -516,31 +555,42 @@ describe('Database', function() {
             });
         })
 
-        describe('JSON Database:', function(){
+        describe('JSON Database:', function() {
             it('Content for data', function(done) {
-                waitDbContent(10, function(){
-                    expect(testDB.db).with.content('"{}"');
+                waitDbContent(10, function() {
+                    expect(testDB.db).with.content('{}\n');
                     done();
                 })
             });
 
             it('Content for Ambush (Lmabda)', function(done) {
                 emptyAmbushFunctions();
-                waitDbContent(10, function(){
-                    expect(testDB.ambush).with.content('"[]"');
+                waitDbContent(10, function() {
+                    expect(testDB.ambush).with.content('[]\n');
                     done();
                 })
             });
-        })
-    })
-
-    describe('Events:', function() {
-        // In next release
+        });
     });
 
-    describe('Methods:', function(){
-        var demoContent = {'data-test': 'testing content', 'more-data-test': [123, true, 'hello']};
-        beforeEach(function(){
+    describe('Events:', function() {
+        // vs 1.0
+    });
+
+    describe('Methods:', function() {
+        var demoContent = {
+            'data-test': 'testing content',
+            'more-data-test': [123, true, 'hello'],
+            'to': {
+                'delete': {
+                    'nested': {
+                        'here': 'finish'
+                    }
+                }
+            }
+        };
+        
+        beforeEach(function() {
             goblinDB.set(demoContent)
         });
 
@@ -562,7 +612,7 @@ describe('Database', function() {
         });
         it('Method push(): Creation', function() {
             goblinDB.push({'more':'data'})
-            expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
+            expect(Object.keys(goblinDB.get()).length).to.be.equal(5);
         });
         it('Deep method set(): Create a deep object', function() {
             goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
@@ -602,14 +652,41 @@ describe('Database', function() {
                 mode: 'strict'
             });
         });
+
         it('Method stopStorage(): Changes', function() {
             goblinDB.stopStorage();
             expect(goblinDB.getConfig().recordChanges).to.be.equal(false);
         });
+
         it('Method startStorage(): Changes', function() {
             goblinDB.stopStorage();
             goblinDB.startStorage();
             expect(goblinDB.getConfig().recordChanges).to.be.equal(true);
+        });
+
+        it('Deep method delete(): Delete a nested point', function() {
+            expect(goblinDB.delete('to.delete.nested.here')).to.be.equal(true);
+            expect(goblinDB.get('to.delete.nested')).to.deep.equal({});
+        });
+
+        it('Deep method delete(): Not delete when pointing to a invalid node', function() {
+            expect(function () {
+                deleted = goblinDB.delete('to.not.exist.nested.point');
+            }).to.throw();
+        });
+
+        it('Deep method delete(): Not point do nothing.', function() {
+            let deleted = false;
+
+            expect(function () {
+                deleted = goblinDB.delete();
+            }).to.throw();
+            expect(deleted).to.be.equal(false);
+        });
+
+        it('Deep method truncate(): Truncate all db.', function() {
+            goblinDB.truncate();
+            expect(goblinDB.get()).to.deep.equal({});
         });
     })
 
@@ -632,10 +709,52 @@ describe('Database', function() {
             expect( console.error.calledOnce ).to.be.false;
         });
     });
-
-
+    
     after(function() {
         cleanUp(testDB.db);
         cleanUp(testDB.ambush);
+    });
+});
+
+describe('Restore from file', function() {
+    const sumFnRestore = {
+        id: 'testing-sum-fn',
+        category: ['test-fn', 'test-sum'],
+        description: 'This is a function that gets an array of numbers and send the sum via callback',
+        action: function(numbers, callback) {
+            callback(numbers.reduce((accumulated, curr) => accumulated + curr, 0));
+        }
+    };
+
+    it('Database - Restored from file successfully', function(done) {
+        const restoreDB = GDB(
+            {
+                fileName: './test/data/restore',
+                mode: 'development'
+            },
+            function(err) {
+                err && console.error('ERROR INITIALIZING RESTORE DB', err);
+                
+                expect(restoreDB.get('internal.references.in.goblin.are')).to.equal('deep');
+                done();
+            }
+        );
+    });
+
+    it('Ambush (Lambda) - Restored from file successfully', function(done) {
+        const restoreDB = GDB(
+            {
+                fileName: './test/data/restore',
+                mode: 'development'
+            },
+            function(err) {
+                err && console.error('ERROR INITIALIZING RESTORE DB', err);
+                
+                restoreDB.ambush.run(sumFnRestore.id, [90, 8, 5], function(result) {
+                    expect(result).to.equal(103);
+                });
+                done();
+            }
+        );
     });
 });

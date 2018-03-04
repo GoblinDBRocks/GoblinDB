@@ -1,0 +1,6 @@
+[{
+    "id": "testing-sum-fn",
+    "category": ["test-fn","test-sum"],
+    "description": "This is a function that gets an array of numbers and send the sum via callback",
+    "action": "\"function (numbers, callback) {\\n        callback(numbers.reduce((accumulated, curr) => accumulated + curr, 0));\\n    }\""
+}]

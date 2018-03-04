@@ -108,8 +108,8 @@ npm test
 - [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
 - [ ] Full documentation in JSDoc.
 - [ ] Gulp Tasks Improvement.
-- [ ] Test support for Events using Sinon.
-- [ ] Test refactor in order to separate more the test cases.
+- [x] Test support for Events using Sinon.
+- [x] Test refactor in order to separate more the test cases.
 
 
 ### Plugins
@@ -117,6 +117,32 @@ npm test
 - __[GoblinSocket](https://github.com/CodingCarlos/GoblinSocket).__ *WebSocket interface for GoblinDB using SocketIO*
 
 ### Achievements
+
+#### v.0.0.10. New Drakkar!
+
+**Main target:**
+
+- Refactor the main structure to improve maintainability.
+- Improve all the test cases, to cover well all the code.
+
+**Bug fixes:**
+
+- Lot of bugs when adding or updating ambush functions.
+- Improved error messages and reasons (some of them was not consistent).
+
+**Features:**
+
+- Travis added to the project
+- Silence mode.
+    - Production mode.
+    - Development mode.
+- New code structure (feature only for developers), wich improve stability.
+
+**Notices:**
+- Great job and support from @Sediug (now in GoblinDB team)
+- This version is a good candidate for v0.1.0
+- Evangelization process has been started (Talks, documentation, workshops...)
+- We are looking for active evangelists, ping us ;-)
 
 #### v.0.0.8
 
