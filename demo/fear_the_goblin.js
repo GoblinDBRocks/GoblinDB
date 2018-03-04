@@ -72,3 +72,4 @@ console.log(goblinDB.ambush.list());
 console.log('Check ambush that apply a math operation');
 goblinDB.ambush.run('testing-goblin', 5, 2);
 goblinDB.ambush.details('testing-goblin').action(9, 2, 3);
+process.exit();
