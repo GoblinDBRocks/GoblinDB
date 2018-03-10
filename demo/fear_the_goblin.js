@@ -14,7 +14,7 @@ goblinDB.on('change', function(changes){
 var originalData = goblinDB.get();
 console.log('originalData:', originalData);
 
-goblinDB.set({'data': 'world!', 'data2': 'Hiiiii'});
+goblinDB.set({'data': 'world!', 'data2': 'Hiiiii'}, 'elemento.elemento.elemento');
 goblinDB.update({'new data': 'hellooo....', 'new array': ['aaaa', true, 2], 'data': 'cambiado!'});
 
 var currentData = goblinDB.get();

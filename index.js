@@ -20,10 +20,10 @@ function GoblinExports(config, cb) {
 	if (!cb) {
 		cb = function() {};
 	}
-
+	
 	// Set configuration
-	config = configValidation(config);
-	goblin.config = _.merge({}, goblin.config, config);
+	config = configValidation(config, goblin.config);
+	//goblin.config = _.merge({}, goblin.config, config);
 
 	// Initialize current database
 	Database.init(function(dbError) {
@@ -69,16 +69,19 @@ function GoblinExports(config, cb) {
 	};
 }
 
-function configValidation(configuration) {
+function configValidation(configuration, goblinConfiguration) {
 	configuration = typeof(configuration) === 'object' ?  configuration : {};
-	configuration.fileName = configuration.fileName ? configuration.fileName : 'goblin_db';
+	configuration.fileName = configuration.fileName || goblinConfiguration.fileName;
 	configuration.files = {
-		ambush: configuration.fileName + '.goblin',
-		db: configuration.fileName + '.json'
+		ambush: configuration.fileName + '.goblin' || goblinConfiguration.files.ambush,
+		db: configuration.fileName + '.json' || goblinConfiguration.files.db,
 	};
-	configuration.recordChanges = configuration.recordChanges || true;
-	configuration.mode = mode[configuration.mode] ? configuration.mode : 'production';
+	configuration.pointerSymbol = configuration.pointerSymbol || goblinConfiguration.pointerSymbol
+	configuration.recordChanges = configuration.recordChanges || goblinConfiguration.recordChanges;
+	configuration.mode = mode[configuration.mode] || goblinConfiguration.mode;
 
+	str = JSON.stringify(configuration);
+	console.log(str)
 	return configuration;
 }
 
