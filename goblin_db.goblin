@@ -1,2 +1,0 @@
-[{"id":"testing-goblin","category":["new thing...","other-tag"],"description":"Optional details...","action":"\"function (a, b, c) {\\n        if (c) {\\n            console.log(`${ a } * ${ b } * ${ c } = `, a * b * c);\\n        } else {\\n            console.log(`${ a } * ${ b } = `, a * b);\\n        }\\n    }\""}]
-]
