@@ -78,7 +78,7 @@ function configValidation(configuration, goblinConfiguration)  {
 	};
   configuration.pointerSymbol = configuration.pointerSymbol || goblinConfiguration.pointerSymbol;
 	configuration.recordChanges = configuration.recordChanges || goblinConfiguration.recordChanges;
-	configuration.mode = mode[configuration.mode] || goblinConfiguration.mode;
+	configuration.mode = configuration.mode || goblinConfiguration.mode;
 	return configuration;
 }
 
