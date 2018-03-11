@@ -23,7 +23,7 @@ function GoblinExports(config, cb) {
 	
 	// Set configuration
 	config = configValidation(config, goblin.config);
-	//goblin.config = _.merge({}, goblin.config, config);
+	goblin.config = _.merge({}, goblin.config, config);
 
 	// Initialize current database
 	Database.init(function(dbError) {

@@ -1,7 +1,7 @@
 module.exports = {
-	logPrefix: '[GoblinDB]',
+ logPrefix: '[GoblinDB]',
  fileName : 'goblin_db',
- pointerSymbol: '/',
+ pointerSymbol: '.',
  recordChanges: true,
  mode : 'production',
 };
