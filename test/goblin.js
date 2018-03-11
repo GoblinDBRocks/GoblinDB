@@ -633,7 +633,7 @@ describe('Database', function() {
                     ambush: './test/testDB.goblin',
                     db: './test/testDB.json'
                 },
-                "pointerSymbol": ".",
+                pointerSymbol: ".",
                 logPrefix: '[GoblinDB]',
                 recordChanges: true,
                 mode: 'strict'
@@ -647,7 +647,7 @@ describe('Database', function() {
                     ambush: './test/testDB.goblin',
                     db: './test/testDB.json'
                 },
-                "pointerSymbol": ".",
+                pointerSymbol: ".",
                 logPrefix: '[GoblinRocks!]',
                 recordChanges: true,
                 extra: 'extra-value',
