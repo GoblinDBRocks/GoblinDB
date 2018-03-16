@@ -226,6 +226,18 @@ describe('Ambush (Lambda) test', function() {
             goblinDB.ambush.remove(simpleFunction.id);
             goblinDB.ambush.update(fullFunction.id, {description: 'Changing description'});
         });
+
+        it('on error', done => {
+            goblinDB.on('error', result => {
+                expect(result.msg).to.be.equal('[GoblinDB]: Ambush saving error: no data provided or data is not an object/Array.');
+                done();
+                goblinDB.off('error');
+            });
+
+            try {
+                goblinDB.ambush.add([]);
+            } catch(e) {}
+        });
     });
 
     describe('Methods:', function() {
