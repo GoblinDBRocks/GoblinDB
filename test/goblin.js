@@ -140,6 +140,94 @@ describe('Ambush (Lambda) test', function() {
         }
     };
 
+    describe('Events:', () => {
+        afterEach(function(done) {
+            cleanAmbush(done);
+        });
+
+        it('on add', done => {
+            goblinDB.on('ambush-add', result => {
+                expect(result.value).to.deep.equal(simpleFunction);
+                expect(result.oldValue).to.be.equal();
+                done();
+                goblinDB.off('ambush-add');
+            });
+            goblinDB.ambush.add(simpleFunction);
+        });
+
+        it('on remove', done => {
+            goblinDB.on('ambush-remove', result => {
+                goblinDB.off('ambush-remove');
+                expect(result.value).to.be.equal();
+                expect(result.oldValue[0].id).to.be.equal(simpleFunction.id);
+                done();
+            });
+            goblinDB.ambush.add(simpleFunction);
+            goblinDB.ambush.remove(simpleFunction.id);
+        });
+
+        it('on update', done => {
+            goblinDB.on('ambush-update', result => {
+                expect(result.value.category).to.deep.equal(['probando']);
+                expect(result.oldValue.id).to.be.equal(simpleFunction.id);
+                done();
+                goblinDB.off('ambush-update');
+            });
+            goblinDB.ambush.add(simpleFunction);
+            goblinDB.ambush.update(simpleFunction.id, {category: ['probando']});
+        });
+
+        it('on change', done => {
+            let changes = 0;
+            const cleaner = object => {
+                return {
+                    id: object.id,
+                    category: object.category,
+                    description: object.description
+                };
+            };
+
+            goblinDB.on('ambush-change', result => {
+                changes++;
+
+                switch(changes) {
+                    case 1:
+                        expect(result.value).to.deep.equal(simpleFunction);
+                        expect(result.oldValue).to.be.equal();
+                        return;
+                    case 2:
+                        expect(result.value).to.deep.equal(argumentFunction);
+                        expect(result.oldValue).to.be.equal();
+                        return;
+                    case 3:
+                        expect(result.value).to.deep.equal(fullFunction);
+                        expect(result.oldValue).to.be.equal();
+                        return;
+                    case 4:
+                        expect(result.value).to.be.equal();
+                        expect(result.oldValue.map(cleaner)).to.deep.equal([
+                            simpleFunction,
+                            argumentFunction,
+                            fullFunction
+                        ].map(cleaner));
+                        return;
+                    case 5:
+                        expect(result.value.description).to.deep.equal('Changing description');
+                        expect(result.oldValue.description).to.be.equal(fullFunction.description);
+                }
+                
+                done();
+                goblinDB.off('ambush-change');
+            });
+
+            goblinDB.ambush.add(simpleFunction);
+            goblinDB.ambush.add(argumentFunction);
+            goblinDB.ambush.add(fullFunction);
+            goblinDB.ambush.remove(simpleFunction.id);
+            goblinDB.ambush.update(fullFunction.id, {description: 'Changing description'});
+        });
+    });
+
     describe('Methods:', function() {
 
         describe('add(): As Expected', function() {
@@ -439,7 +527,7 @@ describe('Ambush (Lambda) test', function() {
                 });
                 expect(goblinDB.ambush.list().length).to.be.equal(2);
             });
-            it('Brings all the functions filtered by category', function(){
+            it('Brings all the functions filtered by category', function() {
                 expect(goblinDB.ambush.list('test').length).to.be.equal(2);
                 expect(goblinDB.ambush.list('test-callback').length).to.be.equal(1);
             });
@@ -573,8 +661,77 @@ describe('Database', function() {
         });
     });
 
-    describe('Events:', function() {
-        // vs 1.0
+    describe('Events:', () => {
+        it('on set', done => {
+            const v = {are: 'deep'};
+            goblinDB.on('set', result => {
+                expect(result.value).to.deep.equal(v);
+                done();
+                goblinDB.off('set');
+            });
+            goblinDB.set(v);
+        });
+
+        it('on push', done => {
+            const v = {are: 'deep'};
+            goblinDB.on('push', result => {
+                expect(result.value).to.deep.equal(v);
+                done();
+                goblinDB.off('push');
+            });
+            goblinDB.push(v);
+        });
+
+        it('on update', done => {
+            const v = {are: 'deep'};
+            goblinDB.on('update', result => {
+                expect(result.value).to.deep.equal(v);
+                done();
+                goblinDB.off('update');
+            });
+            goblinDB.update(v, 'refs');
+        });
+
+        it('on truncate', done => {
+            goblinDB.on('truncate', result => {
+                expect(result.value).to.deep.equal({});
+                done();
+                goblinDB.off('truncate');
+            });
+            goblinDB.truncate();
+        });
+
+        it('on delete', done => {
+            const v = {test: 1};
+            goblinDB.set(v, 'data');
+            goblinDB.on('delete', result => {
+                expect(result.value).to.deep.equal();
+                expect(result.oldValue).to.deep.equal(v);
+                done();
+                goblinDB.off('delete');
+            });
+            goblinDB.delete('data');
+        });
+
+        it('on change', done => {
+            let changes = 0;
+
+            goblinDB.on('change', result => {
+                changes++;
+
+                if (changes === 3) {
+                    expect(result.value).to.deep.equal({ prueba: 10 });
+                    expect(result.oldValue).to.deep.equal();
+                    done();
+                    goblinDB.off('change');
+                }
+            });
+
+            const v = {test: 1};
+            goblinDB.set(v, 'data');
+            goblinDB.delete('data');
+            goblinDB.push({prueba: 10}, 'deep.data');
+        });
     });
 
     describe('Methods:', function() {
