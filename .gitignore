@@ -42,3 +42,6 @@ IGNORE
 
 # Testing results
 coverage
+
+goblin_db.goblin
+goblin_db.json
