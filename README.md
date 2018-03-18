@@ -107,7 +107,7 @@ npm test
 - [x] Additional events to support (config changes, etc...). 
 - [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
 - [ ] Full documentation in JSDoc.
-- [ ] Gulp Tasks Improvement.
+- [x] Gulp Tasks Improvement.
 - [x] Test support for Events using Sinon.
 - [x] Test refactor in order to separate more the test cases.
 
