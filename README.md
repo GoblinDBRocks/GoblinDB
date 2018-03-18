@@ -27,7 +27,7 @@
 
 ### IMPORTANT!
 
-GobliDB is not ready for production. It'll be ready in a few days / 2 weeks...
+GoblinDB is not ready for production. It'll be ready in a few days / 2 weeks...
 
 **We will release a production ready version soon, please keep in touch**
 
@@ -110,7 +110,7 @@ npm test
 - [ ] Add support to UID in events.
 - [x] Additional events to support (config changes, etc...). 
 - [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
-- [ ] Full documentation in JSDoc.
+- [x] Full documentation in JSDoc.
 - [x] Gulp Tasks Improvement.
 - [x] Test support for Events using Sinon.
 - [x] Test refactor in order to separate more the test cases.
