@@ -102,14 +102,14 @@ npm test
 ### Future Implementations
 
 - [x] Support multidimensional navigation in the database (.ref() method). Using get instead of .ref but same functionality. https://github.com/GoblinDBRocks/GoblinDB/issues/17
-- [ ] Support to chain methods.
-- [ ] Plugin documentation example
+- [ ] Support to chain methods. [Issue](https://github.com/GoblinDBRocks/GoblinDB/issues/50)
+- [ ] Plugin documentation example.
 - [ ] Add basic query methods as a plugin.
 - [ ] Add Avance query methods as a plugin.
-- [ ] Add support to .once() method for events.
+- [ ] Add support to .once() method for events. [Issue](https://github.com/GoblinDBRocks/GoblinDB/issues/51)
 - [ ] Add support to UID in events.
 - [x] Additional events to support (config changes, etc...). 
-- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
+- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.[Issue](https://github.com/GoblinDBRocks/GoblinDB/issues/52)
 - [x] Full documentation in JSDoc.
 - [x] Gulp Tasks Improvement.
 - [x] Test support for Events using Sinon.
