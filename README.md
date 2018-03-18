@@ -125,11 +125,17 @@ Wellcome to the new members of the team :heart: Andrés @drewler (The Galician T
 
 People which have contributed to this release:
 [Sebastián Cabanas](https://github.com/Sediug) **Co-leader**
+
 [Carlos Hernandez](https://github.com/CodingCarlos) **Co-leader**
+
 [Ulises Gascón](https://github.com/UlisesGascon) **Evangelist and Consultant**
-[Santiago Trigo Porres](https://github.com/trigoporres) **Contributor**
-[Andrés](https://github.com/drewler) **Contributor**
-[Alvaro](https://github.com/alvarogtx300) **Contributor**
+
+[Santiago Trigo Porres](https://github.com/trigoporres) **Contributor** :tada::tada:
+
+[Andrés](https://github.com/drewler) **Contributor** :tada::tada:
+
+[Alvaro](https://github.com/alvarogtx300) **Contributor** :tada::tada:
+
 
 **Main target:**
 
@@ -159,7 +165,7 @@ People which have contributed to this release:
 - Test improvements (feature only for developers), wich improve stability.
 
 **Notices:**
-- Great job and support from [Alvaro](https://github.com/alvarogtx300), [Santiago Trigo Porres](https://github.com/trigoporres), [és](https://github.com/drewler) (now in GoblinDB team)
+- Great job and support from [Alvaro](https://github.com/alvarogtx300), [Santiago Trigo Porres](https://github.com/trigoporres) and [Andrés](https://github.com/drewler) (now in GoblinDB team) :tada::tada:
 - This version is a good candidate for v0.1.0
 - Evangelization process is going on (Talks, documentation, workshops...) Last event was T3chfest 2018 and all osw events :+1:
 - We are looking for active evangelists, ping us ;-)
