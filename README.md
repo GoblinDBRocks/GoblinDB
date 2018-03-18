@@ -124,6 +124,7 @@ We've found bugs... bugs which didn't make sense, like meigas it looks like ther
 Wellcome to the new members of the team :heart: Andrés @drewler (The Galician Tigger), Santiago @trigoporres (El potro de Vallecas) and Alvaro @alvarogtx300 (El ausente :trollface:)
 
 People which have contributed to this release:
+
 [Sebastián Cabanas](https://github.com/Sediug) **Co-leader**
 
 [Carlos Hernandez](https://github.com/CodingCarlos) **Co-leader**
@@ -135,6 +136,7 @@ People which have contributed to this release:
 [Andrés](https://github.com/drewler) **Contributor** :tada::tada:
 
 [Alvaro](https://github.com/alvarogtx300) **Contributor** :tada::tada:
+
 
 
 **Main target:**
