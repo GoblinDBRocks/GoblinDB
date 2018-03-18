@@ -27,38 +27,42 @@
 
 ### IMPORTANT!
 
-GobliDB is not ready for production. It is an experimental database, most of the features are under development... You can use it now, but there is a lot of work pending. 
+GobliDB is not ready for production. It'll be ready in a few days / 2 weeks...
 
 **We will release a production ready version soon, please keep in touch**
 
 ### [Documentation](http://goblindb.osweekends.com/)
 
 ```javascript
-var GDB = require("goblindb");
+const GDB = require("goblindb");
 
-var goblinDB = GDB();
+const goblinDB = GDB(function(dbError) {
+    if (dbError) {
+        throw dbError;
+    }
 
-console.log("Fear the Goblin!")
+    console.log("Fear the Goblin!")
 
-// Events supported
-goblinDB.on('change', function(changes){
-    console.log("-- change detected!:", changes)
-    console.log("====================")
+    // Events supported
+    goblinDB.on('change', function(changes){
+        console.log("-- change detected!:", changes)
+        console.log("====================")
+    });
+
+    // Read all Database...
+    const originalData = goblinDB.get();
+    console.log("originalData:", originalData);
+
+    // Store data...
+    goblinDB.set({"data": "world!", "data2": "Hiiiii"});
+
+    // Update date...
+    goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
+
+    // Read all Database...
+    const currentData = goblinDB.get();
+    console.log("currentData:", currentData)
 });
-
-// Read all Database...
-var originalData = goblinDB.get();
-console.log("originalData:", originalData);
-
-// Store data...
-goblinDB.set({"data": "world!", "data2": "Hiiiii"});
-
-// Update date...
-goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
-
-// Read all Database...
-var currentData = goblinDB.get();
-console.log("currentData:", currentData)
 ```
 
 **[Check the official documentation in our website](http://goblindb.osweekends.com/)**
