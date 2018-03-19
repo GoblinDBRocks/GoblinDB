@@ -157,7 +157,7 @@ People which have contributed to this release:
 - Add test cases for events. [Issue 8](https://github.com/GoblinDBRocks/GoblinDB/issues/8) [Pull Request 44](https://github.com/GoblinDBRocks/GoblinDB/pull/44)
 - Add errors FAQ and improve messages adding links to the docs (in dev mode only). [Issue 14](https://github.com/GoblinDBRocks/GoblinDB/issues/14) [Pull Request 46](https://github.com/GoblinDBRocks/GoblinDB/pull/46) Thanks to [Andrés](https://github.com/drewler) :100:
 - Add ambush functions events hooks.  Now you can listen to **ambush-change**, **ambush-add**, **ambush-update** and **ambush-remove**.
-- Add support for detaching all events of the same type for all the callbacks asociated. Ex. Detaching the listeners for 4 diferent callbacks on change event.
+- Add support for detaching all events of the same type for all the callbacks associated. Ex. Detaching the listeners for 4 different callbacks on change event.
 
 **Bug fixes:**
 
