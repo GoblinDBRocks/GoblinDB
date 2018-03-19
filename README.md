@@ -101,15 +101,16 @@ npm test
 
 ### Future Implementations
 
-- [x] Support multidimensional navigation in the database (.ref() method). Using get instead of .ref but same functionality. https://github.com/GoblinDBRocks/GoblinDB/issues/17
-- [ ] Support to chain methods. [Issue](https://github.com/GoblinDBRocks/GoblinDB/issues/50)
-- [ ] Plugin documentation example.
-- [ ] Add basic query methods as a plugin.
-- [ ] Add Avance query methods as a plugin.
-- [ ] Add support to .once() method for events. [Issue](https://github.com/GoblinDBRocks/GoblinDB/issues/51)
-- [ ] Add support to UID in events.
+- [ ] Support to chain methods. [Issue 50](https://github.com/GoblinDBRocks/GoblinDB/issues/50)
+- [ ] Add Pugins system. [Issue 12](https://github.com/GoblinDBRocks/GoblinDB/issues/12)
+- [ ] Plugin documentation example. [Issue 56](https://github.com/GoblinDBRocks/GoblinDB/issues/56)
+- [ ] Add basic query methods as a plugin. [Issue 54](https://github.com/GoblinDBRocks/GoblinDB/issues/54)
+- [ ] Add Avance query methods as a plugin. [Issue 55](https://github.com/GoblinDBRocks/GoblinDB/issues/55)
+- [ ] Add support to .once() method for events. [Issue 51](https://github.com/GoblinDBRocks/GoblinDB/issues/51)
+- [ ] Add support to UID in events. [Issue 53](https://github.com/GoblinDBRocks/GoblinDB/issues/53)
+- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.[Issue 52](https://github.com/GoblinDBRocks/GoblinDB/issues/52)
+- [x] Support multidimensional navigation in the database (.ref() method). Using get instead of .ref but same functionality. [Issue 17](https://github.com/GoblinDBRocks/GoblinDB/issues/17)
 - [x] Additional events to support (config changes, etc...). 
-- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.[Issue](https://github.com/GoblinDBRocks/GoblinDB/issues/52)
 - [x] Full documentation in JSDoc.
 - [x] Gulp Tasks Improvement.
 - [x] Test support for Events using Sinon.
