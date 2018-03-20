@@ -124,7 +124,7 @@ npm test
 ### Achievements
 
 #### v.0.0.11 Meigas!
-We've found bugs... bugs which didn't make sense, like meigas it looks like there is none but in the there were some big bugs like db not storing data in the json and other similar "features" :trollface:
+We've found bugs... bugs which didn't make sense, like meigas it looks like there is none but in the end there were some big bugs like db not storing data in the json and other similar "features" :trollface:
 
 Wellcome to the new members of the team :heart: Andrés @drewler (The Galician Tigger), Santiago @trigoporres (El potro de Vallecas) and Alvaro @alvarogtx300 (El ausente :trollface:)
 
