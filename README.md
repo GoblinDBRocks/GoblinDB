@@ -27,7 +27,7 @@
 
 ### IMPORTANT!
 
-GoblinDB is not ready for production. It'll be ready in a few days / 2 weeks...
+GoblinDB is not ready for production. It'll be ready in a few weeks...
 
 **We will release a production ready version soon, please keep in touch**
 
