@@ -1,6 +1,6 @@
 {
   "name": "@goblindb/goblindb",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "GoblinDB | Fear the Goblin! | An amazing, simple and fun database for humans",
   "main": "./index.js",
   "scripts": {
@@ -31,6 +31,18 @@
     {
       "name": "Sebastián Cabanas",
       "url": "https://github.com/Sediug"
+    },
+    {
+      "name": "Santiago Trigo Porres",
+      "url": "https://github.com/trigoporres"
+    },
+    {
+      "name": "Andrés",
+      "url": "https://github.com/drewler"
+    },
+    {
+      "name": "Álvaro",
+      "url": "https://github.com/alvarogtx300"
     }
   ],
   "license": "GPL-3.0",

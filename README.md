@@ -27,38 +27,42 @@
 
 ### IMPORTANT!
 
-GobliDB is not ready for production. It is an experimental database, most of the features are under development... You can use it now, but there is a lot of work pending. 
+GoblinDB is not ready for production. It'll be ready in a few weeks...
 
 **We will release a production ready version soon, please keep in touch**
 
 ### [Documentation](http://goblindb.osweekends.com/)
 
 ```javascript
-var GDB = require("goblindb");
+const GDB = require("goblindb");
 
-var goblinDB = GDB();
+const goblinDB = GDB(function(dbError) {
+    if (dbError) {
+        throw dbError;
+    }
 
-console.log("Fear the Goblin!")
+    console.log("Fear the Goblin!")
 
-// Events supported
-goblinDB.on('change', function(changes){
-    console.log("-- change detected!:", changes)
-    console.log("====================")
+    // Events supported
+    goblinDB.on('change', function(changes){
+        console.log("-- change detected!:", changes)
+        console.log("====================")
+    });
+
+    // Read all Database...
+    const originalData = goblinDB.get();
+    console.log("originalData:", originalData);
+
+    // Store data...
+    goblinDB.set({"data": "world!", "data2": "Hiiiii"});
+
+    // Update date...
+    goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
+
+    // Read all Database...
+    const currentData = goblinDB.get();
+    console.log("currentData:", currentData)
 });
-
-// Read all Database...
-var originalData = goblinDB.get();
-console.log("originalData:", originalData);
-
-// Store data...
-goblinDB.set({"data": "world!", "data2": "Hiiiii"});
-
-// Update date...
-goblinDB.update({"new data": "hellooo....", "new array": ["aaaa", true, 2], "data": "cambiado!"})
-
-// Read all Database...
-var currentData = goblinDB.get();
-console.log("currentData:", currentData)
 ```
 
 **[Check the official documentation in our website](http://goblindb.osweekends.com/)**
@@ -97,17 +101,18 @@ npm test
 
 ### Future Implementations
 
-- [ ] Support multidimensional navigation in the database (.ref() method).
-- [ ] Support to chain methods.
-- [ ] Plugin documentation example
-- [ ] Add basic query methods as a plugin.
-- [ ] Add Avance query methods as a plugin.
-- [ ] Add support to .once() method for events.
-- [ ] Add support to UID in events.
-- [ ] Additional events to support (config changes, etc...).
-- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.
-- [ ] Full documentation in JSDoc.
-- [ ] Gulp Tasks Improvement.
+- [ ] Support to chain methods. [Issue 50](https://github.com/GoblinDBRocks/GoblinDB/issues/50)
+- [ ] Add Pugins system. [Issue 12](https://github.com/GoblinDBRocks/GoblinDB/issues/12)
+- [ ] Plugin documentation example. [Issue 56](https://github.com/GoblinDBRocks/GoblinDB/issues/56)
+- [ ] Add basic query methods as a plugin. [Issue 54](https://github.com/GoblinDBRocks/GoblinDB/issues/54)
+- [ ] Add Avance query methods as a plugin. [Issue 55](https://github.com/GoblinDBRocks/GoblinDB/issues/55)
+- [ ] Add support to .once() method for events. [Issue 51](https://github.com/GoblinDBRocks/GoblinDB/issues/51)
+- [ ] Add support to UID in events. [Issue 53](https://github.com/GoblinDBRocks/GoblinDB/issues/53)
+- [ ] Add additional support to Backup Goblin with other databases like Firebase, Mongo... in real time as a plugin.[Issue 52](https://github.com/GoblinDBRocks/GoblinDB/issues/52)
+- [x] Support multidimensional navigation in the database (.ref() method). Using get instead of .ref but same functionality. [Issue 17](https://github.com/GoblinDBRocks/GoblinDB/issues/17)
+- [x] Additional events to support (config changes, etc...). 
+- [x] Full documentation in JSDoc.
+- [x] Gulp Tasks Improvement.
 - [x] Test support for Events using Sinon.
 - [x] Test refactor in order to separate more the test cases.
 
@@ -117,6 +122,60 @@ npm test
 - __[GoblinSocket](https://github.com/CodingCarlos/GoblinSocket).__ *WebSocket interface for GoblinDB using SocketIO*
 
 ### Achievements
+
+#### v.0.0.11 Meigas!
+We've found bugs... bugs which didn't make sense, like meigas it looks like there is none but in the end there were some big bugs like db not storing data in the json and other similar "features" :trollface:
+
+Wellcome to the new members of the team :heart: Andrés @drewler (The Galician Tigger), Santiago @trigoporres (El potro de Vallecas) and Alvaro @alvarogtx300 (El ausente :trollface:)
+
+People which have contributed to this release:
+
+[Sebastián Cabanas](https://github.com/Sediug) **Co-leader**
+
+[Carlos Hernandez](https://github.com/CodingCarlos) **Co-leader**
+
+[Ulises Gascón](https://github.com/UlisesGascon) **Evangelist and Consultant**
+
+[Santiago Trigo Porres](https://github.com/trigoporres) **Contributor** :tada::tada:
+
+[Andrés](https://github.com/drewler) **Contributor** :tada::tada:
+
+[Alvaro](https://github.com/alvarogtx300) **Contributor** :tada::tada:
+
+
+
+**Main target:**
+
+- Version 1 candidate.
+- Remove eval. Improved how data gets saved and loaded.
+- Various code improvements.
+- Events improvements.
+- Add callback to goblin init method (now async loading json db files).
+- Allow using a custom pointer symbol (you can use '/' for example, instead of '.' (default)). Configurable in init method config. [Issue 36](https://github.com/GoblinDBRocks/GoblinDB/issues/36) [Pull Request 42](https://github.com/GoblinDBRocks/GoblinDB/pull/42) Thanks to [Santiago Trigo Porres](https://github.com/trigoporres) :100:
+- Add **delete** and **truncate** methods to database. [Issue 38](https://github.com/GoblinDBRocks/GoblinDB/issues/38) PR [Pull Request 34](https://github.com/GoblinDBRocks/GoblinDB/pull/34)
+- Add error events hook. Now you can listen to `goblinDBInstance.on('error', callback...)`. [Issue 37](https://github.com/GoblinDBRocks/GoblinDB/issues/37) [Pull Request 43](https://github.com/GoblinDBRocks/GoblinDB/pull/43) Thanks to [Alvaro](https://github.com/alvarogtx300) :100:
+- Add test cases for events. [Issue 8](https://github.com/GoblinDBRocks/GoblinDB/issues/8) [Pull Request 44](https://github.com/GoblinDBRocks/GoblinDB/pull/44)
+- Add errors FAQ and improve messages adding links to the docs (in dev mode only). [Issue 14](https://github.com/GoblinDBRocks/GoblinDB/issues/14) [Pull Request 46](https://github.com/GoblinDBRocks/GoblinDB/pull/46) Thanks to [Andrés](https://github.com/drewler) :100:
+- Add ambush functions events hooks.  Now you can listen to **ambush-change**, **ambush-add**, **ambush-update** and **ambush-remove**.
+- Add support for detaching all events of the same type for all the callbacks associated. Ex. Detaching the listeners for 4 different callbacks on change event.
+
+**Bug fixes:**
+
+- Lots of bugs. I don't even now where to start haha. 
+
+**Features:**
+
+- Add methods **delete** and **truncate** to the database.
+- Added a callback to Goblin **init** method which will be called when the db is ready to work (load data from file async).
+- Allow using a custom pointer symbol. Now you can use ***'/'*** (firebase friendly).
+- New code structure (feature only for developers), wich improve stability.
+- Test improvements (feature only for developers), wich improve stability.
+
+**Notices:**
+- Great job and support from [Alvaro](https://github.com/alvarogtx300), [Santiago Trigo Porres](https://github.com/trigoporres) and [Andrés](https://github.com/drewler) (now in GoblinDB team) :tada::tada:
+- This version is a good candidate for v0.1.0
+- Evangelization process is going on (Talks, documentation, workshops...) Last event was T3chfest 2018 and all osw events :+1:
+- We are looking for active evangelists, ping us ;-)
 
 #### v.0.0.10. New Drakkar!
 
@@ -140,7 +199,6 @@ npm test
 
 **Notices:**
 - Great job and support from @Sediug (now in GoblinDB team)
-- This version is a good candidate for v0.1.0
 - Evangelization process has been started (Talks, documentation, workshops...)
 - We are looking for active evangelists, ping us ;-)
 

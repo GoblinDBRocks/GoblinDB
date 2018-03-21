@@ -14,7 +14,7 @@ goblinDB.on('change', function(changes){
 var originalData = goblinDB.get();
 console.log('originalData:', originalData);
 
-goblinDB.set({'data': 'world!', 'data2': 'Hiiiii'});
+goblinDB.set({'data': 'world!', 'data2': 'Hiiiii'}, 'elemento.elemento.elemento');
 goblinDB.update({'new data': 'hellooo....', 'new array': ['aaaa', true, 2], 'data': 'cambiado!'});
 
 var currentData = goblinDB.get();
@@ -72,3 +72,4 @@ console.log(goblinDB.ambush.list());
 console.log('Check ambush that apply a math operation');
 goblinDB.ambush.run('testing-goblin', 5, 2);
 goblinDB.ambush.details('testing-goblin').action(9, 2, 3);
+process.exit();
