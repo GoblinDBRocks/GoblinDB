@@ -42,3 +42,7 @@ IGNORE
 
 # Testing results
 coverage
+
+# Ignore goblin files if any
+*.goblin
+goblin_db.json

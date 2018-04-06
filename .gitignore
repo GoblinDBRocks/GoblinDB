@@ -45,3 +45,7 @@ coverage
 
 goblin_db.goblin
 goblin_db.json
+
+# Demo files
+/demo/*.json
+*.goblin
