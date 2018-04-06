@@ -147,7 +147,7 @@ Those are the amazing people which have contributed to this project:
 ### Achievements
 
 #### v.0.1.0 The Kraken!
-:tada::tada Finally, here we are! Releasing the version one, the first production quality version available ever. We're very proud to reach this step in the project life! :tada::tada
+:tada::tada: Finally, here we are! Releasing the version one, the first production quality version available ever. We're very proud to reach this step in the project life! :tada::tada:
 
 After almost one month working with the last version [v0.0.11 Meigas](https://github.com/Sediug/GoblinDB/tree/dev#v0011-meigas) we're pretty sure the database is reliable to be used in a production environment. So here we are releasing the kraken!
 
