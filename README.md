@@ -121,7 +121,46 @@ npm test
 
 - __[GoblinSocket](https://github.com/CodingCarlos/GoblinSocket).__ *WebSocket interface for GoblinDB using SocketIO*
 
+
+### Goblin Team
+Those are the amazing people which have contributed to this project:
+
+[Ulises Gascón](https://github.com/UlisesGascon) **Co-leader**
+
+[Sebastián Cabanas](https://github.com/Sediug) **Co-leader**
+
+[Carlos Hernandez](https://github.com/CodingCarlos) **Co-leader**
+
+[Leyla Vieira](https://github.com/LeylaVieira) **Contributor** (Web)
+
+[Santiago Trigo Porres](https://github.com/trigoporres) **Contributor**
+
+[Andrés](https://github.com/drewler) **Contributor**
+
+[Alvaro](https://github.com/alvarogtx300) **Contributor**
+
+[Jose](https://github.com/Josheriff) **Contributor** (Moral support :t
+
+
+
+
 ### Achievements
+
+#### v.0.1.0 The Kraken!
+:tada::tada: Finally, here we are! Releasing the version one, the first production quality version available ever. We're very proud to reach this step in the project life! :tada::tada:
+
+After almost one month working with the last version [v0.0.11 Meigas](https://github.com/GoblinDBRocks/GoblinDB#v0011-meigas) we're pretty sure the database is reliable to be used in a production environment. So here we are releasing the kraken!
+
+
+**Bug fixes:**
+
+- Improve and update the project demo.
+
+**Notices:**
+- Evangelization process is going on (Talks, documentation, workshops...)
+- We are looking for active evangelists, ping us ;-)
+
+
 
 #### v.0.0.11 Meigas!
 We've found bugs... bugs which didn't make sense, like meigas it looks like there is none but in the end there were some big bugs like db not storing data in the json and other similar "features" :trollface:
@@ -176,6 +215,7 @@ People which have contributed to this release:
 - This version is a good candidate for v0.1.0
 - Evangelization process is going on (Talks, documentation, workshops...) Last event was T3chfest 2018 and all osw events :+1:
 - We are looking for active evangelists, ping us ;-)
+
 
 #### v.0.0.10. New Drakkar!
 
