@@ -25,12 +25,6 @@
 - Data is not the only stuff that can be store in a database.
 - We prefer ambush functions over lambda functions. As you know... we're talking about anonymous functions.
 
-### IMPORTANT!
-
-GoblinDB is not ready for production. It'll be ready in a few weeks...
-
-**We will release a production ready version soon, please keep in touch**
-
 ### [Documentation](http://goblindb.osweekends.com/)
 
 ```javascript
