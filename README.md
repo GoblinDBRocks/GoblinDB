@@ -133,7 +133,7 @@ Those are the amazing people which have contributed to this project:
 
 [Alvaro](https://github.com/alvarogtx300) **Contributor**
 
-[Jose](https://github.com/Josheriff) **Contributor** (Moral support :t
+[Jose](https://github.com/Josheriff) **Contributor** (Moral support :trollface:)
 
 
 
