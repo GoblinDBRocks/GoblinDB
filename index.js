@@ -70,13 +70,14 @@ function GoblinExports(config, cb) {
 }
 
 function configValidation(configuration, goblinConfiguration)  {
-	configuration = typeof(configuration) === 'object' ?  configuration : {};
+	configuration = typeof(configuration) === 'object' &&
+		configuration !== null ?  configuration : {};
 	configuration.fileName = configuration.fileName || goblinConfiguration.fileName;
 	configuration.files = {
 		ambush: configuration.fileName + '.goblin',
 		db: configuration.fileName + '.json'
 	};
-  configuration.pointerSymbol = configuration.pointerSymbol || goblinConfiguration.pointerSymbol;
+  	configuration.pointerSymbol = configuration.pointerSymbol || goblinConfiguration.pointerSymbol;
 	configuration.recordChanges = configuration.recordChanges || goblinConfiguration.recordChanges;
 	configuration.mode = configuration.mode || goblinConfiguration.mode;
 	return configuration;
