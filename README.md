@@ -28,7 +28,7 @@
 ### [Documentation](http://goblindb.osweekends.com/)
 
 ```javascript
-const GDB = require("goblindb");
+const GDB = require("@goblindb/goblindb");
 
 const goblinDB = GDB(function(dbError) {
     if (dbError) {
