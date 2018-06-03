@@ -1,7 +1,7 @@
-![shieldsIO](https://img.shields.io/github/issues/UlisesGascon/GoblinDB.svg)
-![shieldsIO](https://img.shields.io/github/release/UlisesGascon/GoblinDB.svg)
-![shieldsIO](https://img.shields.io/github/license/UlisesGascon/GoblinDB.svg)
-![shieldsIO](https://img.shields.io/david/UlisesGascon/GoblinDB.svg)
+![shieldsIO](https://img.shields.io/github/issues/GoblinDBRocks/GoblinDB.svg)
+![shieldsIO](https://img.shields.io/github/release/GoblinDBRocks/GoblinDB.svg)
+![shieldsIO](https://img.shields.io/github/license/GoblinDBRocks/GoblinDB.svg)
+![shieldsIO](https://img.shields.io/david/GoblinDBRocks/GoblinDB.svg)
 [![Build Status](https://travis-ci.org/GoblinDBRocks/GoblinDB.svg?branch=master)](https://travis-ci.org/GoblinDBRocks/GoblinDB)
 
 # [GoblinDB](http://goblindb.osweekends.com/)
@@ -67,7 +67,7 @@ You can run a demo in 4 steps!
 
 1. Clone this repository
 ```bash
-    git clone https://github.com/UlisesGascon/GoblinDB 
+    git clone https://github.com/GoblinDBRocks/GoblinDB 
 ```
 
 2. Enter in the folder
@@ -282,8 +282,8 @@ People which have contributed to this release:
 - Documentation improved
 
 **Bugs Fixed**
-- [Wrong route on npm install](https://github.com/UlisesGascon/GoblinDB/issues/3)
-- [Database storage location](https://github.com/UlisesGascon/GoblinDB/issues/4)
+- [Wrong route on npm install](https://github.com/GoblinDBRocks/GoblinDB/issues/3)
+- [Database storage location](https://github.com/GoblinDBRocks/GoblinDB/issues/4)
 
 
 #### v.0.0.3
