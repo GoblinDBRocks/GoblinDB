@@ -700,11 +700,13 @@ describe('Database', function() {
         it('on update', done => {
             const v = {are: 'deep'};
             goblinDB.on('update', result => {
-                expect(result.value).to.deep.equal(v);
+                expect(result.value).to.deep.equal('new-value');
+                expect(result.oldValue).to.deep.equal('deep');
                 done();
                 goblinDB.off('update');
             });
-            goblinDB.update(v, 'refs');
+            goblinDB.set(v);
+            goblinDB.update('new-value', 'are');
         });
 
         it('on truncate', done => {
@@ -783,15 +785,15 @@ describe('Database', function() {
             expect(goblinDB.get('more-data')).to.deep.equal({'more': 'details'});
         });
         it('Method push(): Creation', function() {
-            goblinDB.push({'more':'data'})
-            expect(Object.keys(goblinDB.get()).length).to.be.equal(5);
+            goblinDB.push({'more':'data'});
+            expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
         });
         it('Deep method set(): Create a deep object', function() {
             goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
             expect(goblinDB.get('internal')).to.deep.equal({'references': {'in': {'goblin': {'are': 'deep'}}}}); // internal.references.in.goblin.are.deep
         });
         it('Deep method get(): Get a deep node', function() {
-            expect(goblinDB.get('internal.references.in.goblin.are')).to.deep.equal('deep');
+            expect(goblinDB.get('to.delete.nested.here')).to.deep.equal('finish');
         });
         it('Deep method push(): Push two objects deep', function() {
             goblinDB.push({'deeper':'than expected'}, 'internal.references.in.goblin.push');
