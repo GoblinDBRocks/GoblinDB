@@ -805,8 +805,7 @@ describe('Database', function() {
                 pointerSymbol: ".",
                 logPrefix: '[GoblinDB]',
                 recordChanges: true,
-                mode: 'strict',
-                watchForDatabaseChanges: false
+                mode: 'strict'
             });
         });
         it('Method updateConfig(): Changes', function() {
@@ -821,8 +820,7 @@ describe('Database', function() {
                 logPrefix: '[GoblinRocks!]',
                 recordChanges: true,
                 extra: 'extra-value',
-                mode: 'strict',
-                watchForDatabaseChanges: false
+                mode: 'strict'
             });
         });
 
