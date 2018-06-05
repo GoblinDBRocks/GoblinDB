@@ -889,6 +889,7 @@ describe('Database', function() {
     });
 });
 
+
 describe('Restore from file', function() {
     const sumFnRestore = {
         id: 'testing-sum-fn',
