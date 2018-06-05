@@ -236,7 +236,10 @@ describe('Ambush (Lambda) test', function() {
 
             try {
                 goblinDB.ambush.add([]);
-            } catch(e) {}
+            } catch(e) {
+                console.error(e);
+                goblinDB.off('error');
+            }
         });
     });
 
@@ -809,7 +812,7 @@ describe('Database', function() {
             });
         });
         it('Method updateConfig(): Changes', function() {
-            goblinDB.updateConfig({logPrefix: '[GoblinRocks!]', 'extra': 'extra-value'});
+            goblinDB.updateConfig({logPrefix: 'GoblinRocks!'});
             expect(goblinDB.getConfig()).to.deep.equal({
                 fileName: './test/testDB',
                 files: {
@@ -819,7 +822,6 @@ describe('Database', function() {
                 pointerSymbol: ".",
                 logPrefix: '[GoblinRocks!]',
                 recordChanges: true,
-                extra: 'extra-value',
                 mode: 'strict'
             });
         });
@@ -886,6 +888,7 @@ describe('Database', function() {
         cleanUp(testDB.ambush);
     });
 });
+
 
 describe('Restore from file', function() {
     const sumFnRestore = {

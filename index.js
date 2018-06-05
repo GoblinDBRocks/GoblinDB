@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 const goblin = require('./lib/goblin');
-const mode = require('./lib/logger/mode');
+const modes = require('./lib/logger/mode');
 const Ambush = require('./lib/ambush');
 const Database = require('./lib/database');
 
@@ -22,8 +22,7 @@ function GoblinExports(config, cb) {
 	}
 	
 	// Set configuration
-	config = configValidation(config, goblin.config);
-	goblin.config = _.merge({}, goblin.config, config);
+	goblin.config = initialConfiguration(goblin.config, config);
 
 	// Initialize current database
 	Database.init(function(dbError) {
@@ -49,10 +48,10 @@ function GoblinExports(config, cb) {
 		on: goblin.hooks.add,
 		off: goblin.hooks.remove,
 		getConfig: function() {
-			return goblin.config;
+			return Object.assign({}, goblin.config);
 		},
 		updateConfig: function(newConfig) {
-			goblin.config = _.merge({}, goblin.config, newConfig);
+			goblin.config = updateConfiguration(goblin.config, newConfig);
 		},
 		stopStorage: function() {
 			goblin.config.recordChanges = false;
@@ -69,18 +68,67 @@ function GoblinExports(config, cb) {
 	};
 }
 
-function configValidation(configuration, goblinConfiguration)  {
-	configuration = typeof(configuration) === 'object' &&
-		configuration !== null ?  configuration : {};
-	configuration.fileName = configuration.fileName || goblinConfiguration.fileName;
-	configuration.files = {
-		ambush: configuration.fileName + '.goblin',
-		db: configuration.fileName + '.json'
-	};
-  	configuration.pointerSymbol = configuration.pointerSymbol || goblinConfiguration.pointerSymbol;
-	configuration.recordChanges = configuration.recordChanges || goblinConfiguration.recordChanges;
-	configuration.mode = configuration.mode || goblinConfiguration.mode;
-	return configuration;
+function isNotEmptyString(element) {
+	return element && typeof(element) === 'string';
+}
+
+function isBoolean(element) {
+	return typeof(element) === 'boolean';
+}
+
+function isValidMode(mode) {
+	return modes[mode] !== undefined;
+}
+
+function initialConfiguration(defaultConfiguration, externalConfiguration) {
+	const updated = updateConfiguration(defaultConfiguration, externalConfiguration);
+
+	if (!updated.files) {
+		updated.files = {
+			ambush: updated.fileName + '.goblin',
+			db: updated.fileName + '.json'
+		};
+	}
+
+	return updated;
+}
+
+function updateConfiguration(currentConfiguration, newConfiguration)  {
+	if (
+		typeof(newConfiguration) !== 'object' ||
+		newConfiguration === null ||
+		Object.keys(newConfiguration).length === 0
+	) {
+		return currentConfiguration;
+	}
+	
+	const updatedConfig = Object.assign({}, currentConfiguration);
+
+	if (isNotEmptyString(newConfiguration.fileName)) {
+		updatedConfig.fileName = newConfiguration.fileName;
+		updatedConfig.files = {
+			ambush: newConfiguration.fileName + '.goblin',
+			db: newConfiguration.fileName + '.json'
+		};
+	}
+
+	if (isNotEmptyString(newConfiguration.pointerSymbol)) {
+		updatedConfig.pointerSymbol = newConfiguration.pointerSymbol;
+	}
+
+	if (isBoolean(newConfiguration.recordChanges)) {
+		updatedConfig.recordChanges = newConfiguration.recordChanges;
+	}
+
+	if (isValidMode(newConfiguration.mode)) {
+		updatedConfig.mode = newConfiguration.mode;
+	}
+	// console.log(updateConfiguration, newConfiguration);
+	if (isNotEmptyString(newConfiguration.logPrefix)) {
+		updatedConfig.logPrefix = '[' + newConfiguration.logPrefix + ']'
+	}
+
+	return updatedConfig;
 }
 
 module.exports = GoblinExports;
