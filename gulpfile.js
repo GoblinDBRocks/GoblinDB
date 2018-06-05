@@ -16,15 +16,15 @@ gulp.task('jsdoc', function(cb) {
 
 gulp.task('test', function (cb) {
     gulp.src(['./src/*.js'])
-    .pipe(istanbul())
-    .pipe(istanbul.hookRequire()) 
-    .on('finish', function () {
-        gulp.src(['./test/*.js'])
-        .pipe(mocha())
-	.pipe(istanbul.writeReports())
-	.pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }))
-	.on('end', cb);
-    });
+        .pipe(istanbul())
+        .pipe(istanbul.hookRequire()) 
+        .on('finish', () => {
+            gulp.src(['./test/*.js'])
+                .pipe(mocha())
+                .pipe(istanbul.writeReports())
+                .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }))
+                .on('end', () => process.exit());
+        });
 });
 
 gulp.task('lint', function() {
