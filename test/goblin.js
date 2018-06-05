@@ -752,7 +752,7 @@ describe('Database', function() {
     });
 
     describe('Methods:', function() {
-        var demoContent = {
+        const demoContent = {
             'data-test': 'testing content',
             'more-data-test': [123, true, 'hello'],
             'to': {
@@ -787,6 +787,21 @@ describe('Database', function() {
         it('Method push(): Creation', function() {
             goblinDB.push({'more':'data'});
             expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
+        });
+        it('Method update(): Update object', function() {
+            goblinDB.update({'more':'data'}, 'data-test');
+            goblinDB.update([1,2,3,4,5], 'more-data-test');
+            goblinDB.update('nothing', 'to');
+            expect(goblinDB.get()).to.deep.equal({
+                'data-test': {'more':'data'},
+                'more-data-test': [1,2,3,4,5],
+                'to': 'nothing'
+            });
+        });
+        it('Method update(): Throw error when invalid pointer (invalid tree node route).', function() {
+            expect(() => {
+                goblinDB.update('nothing', 'this-should-not-exist');
+            }).to.throw(errors.DB_UPDATE_POIN_NOT_EXIST)
         });
         it('Deep method set(): Create a deep object', function() {
             goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
