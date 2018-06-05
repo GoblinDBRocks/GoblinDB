@@ -3,5 +3,5 @@ module.exports = {
     fileName : 'goblin_db',
     pointerSymbol: '.',
     recordChanges: true,
-    mode : 'production',
+    mode : 'production'
 };
