@@ -53,8 +53,8 @@
   "dependencies": {
     "fs-extra": "^5.0.0",
     "json-fn": "^1.1.1",
-    "lodash": "^4.17.11",
-    "randomstring": "^1.1.5"
+    "lodash": "4.17.12",
+    "randomstring": "1.1.5"
   },
   "devDependencies": {
     "chai": "^3.5.0",
