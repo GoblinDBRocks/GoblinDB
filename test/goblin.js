@@ -236,7 +236,10 @@ describe('Ambush (Lambda) test', function() {
 
             try {
                 goblinDB.ambush.add([]);
-            } catch(e) {}
+            } catch(e) {
+                console.error(e);
+                goblinDB.off('error');
+            }
         });
     });
 
@@ -697,11 +700,13 @@ describe('Database', function() {
         it('on update', done => {
             const v = {are: 'deep'};
             goblinDB.on('update', result => {
-                expect(result.value).to.deep.equal(v);
+                expect(result.value).to.deep.equal('new-value');
+                expect(result.oldValue).to.deep.equal('deep');
                 done();
                 goblinDB.off('update');
             });
-            goblinDB.update(v, 'refs');
+            goblinDB.set(v);
+            goblinDB.update('new-value', 'are');
         });
 
         it('on truncate', done => {
@@ -747,7 +752,7 @@ describe('Database', function() {
     });
 
     describe('Methods:', function() {
-        var demoContent = {
+        const demoContent = {
             'data-test': 'testing content',
             'more-data-test': [123, true, 'hello'],
             'to': {
@@ -780,15 +785,30 @@ describe('Database', function() {
             expect(goblinDB.get('more-data')).to.deep.equal({'more': 'details'});
         });
         it('Method push(): Creation', function() {
-            goblinDB.push({'more':'data'})
-            expect(Object.keys(goblinDB.get()).length).to.be.equal(5);
+            goblinDB.push({'more':'data'});
+            expect(Object.keys(goblinDB.get()).length).to.be.equal(4);
+        });
+        it('Method update(): Update object', function() {
+            goblinDB.update({'more':'data'}, 'data-test');
+            goblinDB.update([1,2,3,4,5], 'more-data-test');
+            goblinDB.update('nothing', 'to');
+            expect(goblinDB.get()).to.deep.equal({
+                'data-test': {'more':'data'},
+                'more-data-test': [1,2,3,4,5],
+                'to': 'nothing'
+            });
+        });
+        it('Method update(): Throw error when invalid pointer (invalid tree node route).', function() {
+            expect(() => {
+                goblinDB.update('nothing', 'this-should-not-exist');
+            }).to.throw(errors.DB_UPDATE_POIN_NOT_EXIST)
         });
         it('Deep method set(): Create a deep object', function() {
             goblinDB.set({are: 'deep'}, 'internal.references.in.goblin');
             expect(goblinDB.get('internal')).to.deep.equal({'references': {'in': {'goblin': {'are': 'deep'}}}}); // internal.references.in.goblin.are.deep
         });
         it('Deep method get(): Get a deep node', function() {
-            expect(goblinDB.get('internal.references.in.goblin.are')).to.deep.equal('deep');
+            expect(goblinDB.get('to.delete.nested.here')).to.deep.equal('finish');
         });
         it('Deep method push(): Push two objects deep', function() {
             goblinDB.push({'deeper':'than expected'}, 'internal.references.in.goblin.push');
@@ -809,7 +829,7 @@ describe('Database', function() {
             });
         });
         it('Method updateConfig(): Changes', function() {
-            goblinDB.updateConfig({logPrefix: '[GoblinRocks!]', 'extra': 'extra-value'});
+            goblinDB.updateConfig({logPrefix: 'GoblinRocks!'});
             expect(goblinDB.getConfig()).to.deep.equal({
                 fileName: './test/testDB',
                 files: {
@@ -819,7 +839,6 @@ describe('Database', function() {
                 pointerSymbol: ".",
                 logPrefix: '[GoblinRocks!]',
                 recordChanges: true,
-                extra: 'extra-value',
                 mode: 'strict'
             });
         });
@@ -886,6 +905,7 @@ describe('Database', function() {
         cleanUp(testDB.ambush);
     });
 });
+
 
 describe('Restore from file', function() {
     const sumFnRestore = {
