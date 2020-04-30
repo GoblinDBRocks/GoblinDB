@@ -4,7 +4,9 @@
   "description": "GoblinDB | Fear the Goblin! | An amazing, simple and fun database for humans",
   "main": "./index.js",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "readme": "README.md",
   "repository": {
@@ -54,7 +56,8 @@
     "fs-extra": "^5.0.0",
     "json-fn": "^1.1.1",
     "lodash": "4.17.12",
-    "randomstring": "1.1.5"
+    "randomstring": "1.1.5",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "chai": "3.5.0",
@@ -69,5 +72,6 @@
     "gulp-jsdoc3": "^2.0.0",
     "mocha-sinon": "^1.2.0",
     "sinon": "^1.17.7"
-  }
+  },
+  "snyk": true
 }
